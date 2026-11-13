@@ -57,4 +57,25 @@ export function readRegion(text, name) {
 	return text.slice(si + start.length, ei).replace(/^\n/, '').replace(/\n[ \t]*$/, '');
 }
 
+// ── Anchored insertion (for editing registration files) ─────────────────────
+// Insert `block` right after the last line matching `re`. Throws if no match.
+export function insertAfterLast(text, re, block) {
+	const lines = text.split('\n');
+	let idx = -1;
+	for (let i = 0; i < lines.length; i++) if (re.test(lines[i])) idx = i;
+	if (idx === -1) throw new Error(`insertAfterLast: no line matches ${re}`);
+	lines.splice(idx + 1, 0, block);
+	return lines.join('\n');
+}
+
+// Insert `block` on its own line(s) immediately before the first line that
+// contains `marker`. Throws if the marker is absent.
+export function insertBeforeFirst(text, marker, block) {
+	const lines = text.split('\n');
+	const idx = lines.findIndex((l) => l.includes(marker));
+	if (idx === -1) throw new Error(`insertBeforeFirst: marker not found: ${marker}`);
+	lines.splice(idx, 0, block);
+	return lines.join('\n');
+}
+
 export { existsSync };

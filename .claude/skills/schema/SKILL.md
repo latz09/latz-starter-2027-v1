@@ -15,10 +15,15 @@ Read `package.json`. If `name` is `latz-starter`, stop and say: "/schema is for 
 
 ## Step 1: Read, don't ask
 
-Read these yourself. If `docs/` has no overview or no screenshots, stop and say which are missing.
+Run `npm run docs` first: it lists the source docs, every page and its sections
+in order, and the schema group + component name each screenshot maps to. Fix any
+naming problems it reports (or tell Jordan) before continuing. Then read the rest
+yourself. If `docs/` has no overview or no screenshots, stop and say which are missing.
 
-- `docs/`: overview, wireframe, design brief, every `*.png` (view each image). `$ARGUMENTS` limits which pages, if given.
-- Real files: `CLAUDE.md`, `sanity/schemaTypes/` (all, `index.js` first), `sanity/structure.js`, `sanity.config.js` imports, `sanity/presentation.js`, `data/queries/**`, `data/config/navigation.js`, `data/config/contact.js`, `utils/seo/buildPageMetadata.js`, `app/(site)/**/page.js`, `components/design/ProjectChecklist.js`.
+- `docs/`: overview, wireframe, design brief, and every page screenshot
+  (`NN-<slug>-page-<section>.ext`, one per section, NN sets order). **View each
+  image.** `$ARGUMENTS` limits which pages, if given.
+- Real files: `CLAUDE.md`, `sanity/schemaTypes/` (all, `index.js` first), `sanity/structure.js`, `sanity.config.js` imports, `sanity/presentation.js`, `data/queries/**`, `data/config/navigation.js`, `data/config/contact.js`, `utils/seo/buildPageMetadata.js`, `app/(site)/**/page.js`.
 - Check `buildPageMetadata.js` takes `params` and falls back to `pageData?.page?.seo`. If not, fix it and tell Jordan it should go through `/promote`.
 - Which schema files that `structure.js` names actually exist? Trust the folder, not the sidebar.
 
@@ -39,15 +44,38 @@ Do not ask what the docs already answer. **Stop. Wait for Jordan's answers.**
 
 Write or update, then stop for approval:
 
-- One file per page in `sanity/schemaTypes/`, one per collection. Replace the stubs. Singleton pages follow the `CLAUDE.md` schema rules: numbered groups with one object field per section, `title` first with `initialValue`, `seoField` once at the end, `🔍 SEO` group declared.
+- **Scaffold each page with the script.** For every page in the inventory run
+  `npm run new-page -- <slug> [--title "..."] [--icon <IconName>]`. It creates
+  the stub schema, query and page file and registers the page in
+  `schemaTypes/index.js`, `structure.js` (sidebar + `singletonTypes`) and
+  `presentation.js` `PAGES`. It is idempotent and skips what exists, so it is
+  safe to run for every page. Pick an icon per page (verify with
+  `node scripts/check-icon.mjs <name>`; it defaults to `Document`).
+- Then fill in the real section fields in each `sanity/schemaTypes/<type>.js`,
+  replacing the stub. **One numbered group per screenshot, in screenshot order**
+  (the order `npm run docs` shows), the group named after the section
+  (`landing-hero` → group `landingHero`). Singleton pages follow the `CLAUDE.md`
+  schema rules: numbered groups with one object field per section, `title` first
+  with `initialValue`, `seoField` once at the end, `🔍 SEO` group declared.
 - Paragraph arrays, image arrays with `alt`, hotspot on images. `Rule.max`/`min` from the design.
 - `initialValue` from the final copy in the screenshots.
 - `navigation.js`: `initialValue` listing every page, last link `isButton: true`. Add `children`, `buttonStyle`, `isExternal` only if the design needs them.
 - Collections: `name` camelCase singular, `order` field when order matters and is not a date, `orderings`, meaningful `preview`. File fields: `options: { accept: '.pdf' }`.
-- Pages not built this round stay stubs (title + SEO group).
-- `sanity/structure.js`: extend it in its existing style. Singletons first in site order, `S.divider()` between singletons, collections, Form Submissions, settings. Add each new singleton to `singletonTypes`. Keep the three exports `sanity.config.js` imports.
-- **Icons:** run `node scripts/check-icon.mjs <names>` for every icon used. Subpath imports only. Reuse a safe icon over guessing.
-- `sanity/schemaTypes/index.js`: barrel in order: navigation, pages (site order), collections, siteSettings, seoSettings, contactForm. Keep any existing entries you did not change.
+- Pages not built this round stay stubs (`new-page` already made them title + SEO).
+- Pages the design **drops** (a starter page not in the design): confirm with
+  Jordan, then `npm run remove-page -- <slug>` (deletes the files and
+  de-registers; it does not touch navigation content).
+- **Collections** are manual (not scaffolded): add the schema file, and register
+  it in `sanity/structure.js` and `schemaTypes/index.js` yourself.
+- `sanity/structure.js`: `new-page` placed each page's sidebar item and
+  `singletonTypes` entry. Adjust the icon or order if needed, and add collections,
+  Form Submissions and settings in the existing style with `S.divider()`s. Keep
+  the three exports `sanity.config.js` imports.
+- **Icons:** run `node scripts/check-icon.mjs <names>` for every icon used (page
+  icons and section-field icons). Subpath imports only. Reuse a safe icon over guessing.
+- `sanity/schemaTypes/index.js`: `new-page` added the pages (grouped with the
+  other `*Page` entries). Add collections, `siteSettings` yourself; keep the
+  order navigation, pages, collections, siteSettings, seoSettings, contactForm.
 - Never touch `seoSettings.js`, `contactForm.js` (unless step 2.5 found a field mismatch), `seoField.js`, `sanity.config.js`.
 
 Run `npm run build` and `npm run lint`. Fix what breaks. Build catches import and syntax errors only, not Studio-level schema warnings (unknown group, duplicate field). Say so.
@@ -69,15 +97,25 @@ Run `npm run build` and `npm run lint`. Then: "Phase 2 done: <files>. Ready for 
 
 ## Phase 3: Page files
 
-After approval:
+After approval. `new-page` already created each `app/(site)/<slug>/page.js`
+(home is `app/(site)/page.js`) and added it to `PAGES`. Here you adjust those
+page files to match the real queries:
 
-- `app/(site)/<slug>/page.js` per page, `app/(site)/page.js` for home. Follow an existing starter page: `BPM` in `generateMetadata`, `fc(Q)`, `PageContainer`, content inside `<Section>`, `export const revalidate = 10`. Placeholder content shows the page title (`data?.title`, or `data?.page?.title` for compound). Do not write section components: `/section` does that.
-- If a section component already exists in `components/`, wire it with spread props. Otherwise leave the placeholder.
-- **Existing page files whose query became compound** (`{ page, ... }`) must switch to `data?.page?.title` and `data?.page?.<group>`. Otherwise they silently fall back to the placeholder title with no error. Check every page file against its final query.
-- Dynamic routes use the pattern in `patterns.md` (`generateStaticParams` with `sanityClient`, params to `BPM`).
-- **`sanity/presentation.js`:** add every new page to `PAGES`, remove pages that no longer exist. Dynamic routes go in `mainDocuments` with a `$slug` filter. Add `siteSettings` to `GLOBAL_TYPES` if it exists.
-- **Home page:** remove `ProjectChecklist` from `app/(site)/page.js`. Do not delete the component. Create `app/(site)/design/checklist/page.js` that renders it inside a `<Section>` (the `/design` layout already noindexes it and the sitemap excludes `/design`). Tell Jordan: it moves to `/design/checklist` because its items (Resend, CORS, inviting the client, SEO settings) are usually still open. Remove the page at launch.
-- Update `DARK_NAV_ROUTES` in `data/config/navigation.js` only if the design shows a dark-hero route. Ask if unsure.
-- Remove pages and routes that were cut (page file, schema, query, nav, `PAGES`), after confirming with Jordan.
+- Placeholder content shows the page title (`data?.title`, or `data?.page?.title`
+  for a compound query). Do not write section components: `/section` does that.
+- **Existing page files whose query became compound** (`{ page, ... }`) must
+  switch to `data?.page?.title` and `data?.page?.<group>`. Otherwise they
+  silently fall back to the placeholder title with no error. Check every page
+  file against its final query.
+- If a section component already exists in `components/`, wire it with spread props.
+- Dynamic routes use the pattern in `patterns.md` (`generateStaticParams` with
+  `sanityClient`, params to `BPM`).
+- **`sanity/presentation.js`:** `new-page` added each page to `PAGES`. You still
+  add dynamic routes to `mainDocuments` with a `$slug` filter, and `siteSettings`
+  to `GLOBAL_TYPES` if it exists.
+- The project setup checklist already ships at `/design/checklist` (starter code).
+  Do not recreate it on Home.
+- Update `DARK_NAV_ROUTES` in `data/config/navigation.js` only if the design
+  shows a dark-hero route. Ask if unsure.
 
 Run `npm run build` and `npm run lint`. Fix what breaks. Then finish with: what was created, anything flagged, and what Jordan should check on localhost (each route loads, Studio shows the new documents, Presentation tool opens each page). Suggest `/section` for the first section. Do not run `npm run dev`.
