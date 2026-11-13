@@ -6,6 +6,35 @@ Format: one section per version, newest first. Patch = fix, minor = new feature,
 
 ---
 
+## 1.3.0 (2026-11-13)
+
+Figma is the source of truth, and the copy now goes into Sanity as real content. No change to the site, Studio or dependencies.
+
+### Added
+- `scripts/seed.mjs` (`npm run seed`): writes `docs/seed/*.json` into Sanity as **published** documents, using `SANITY_API_TOKEN` from `.env.local` (the script reads it; Claude still never reads `.env` files). Plain `fetch`, no new dependency.
+  - **Safe by default:** only fills documents and fields that are empty, never overwrites an edit made in Studio. Arrays that already have anything in them are left alone. `ifRevisionID` makes a mid-run edit fail loudly instead of being overwritten.
+  - **Drafts:** if a document has an unpublished Studio draft, its empty fields are filled too, and the output names every draft it touched.
+  - `--dry-run` (reads Sanity, writes nothing), `--dry-run --offline` (checks the files, no network or token), `-- <slug>` for one file, `--force` to overwrite (never deletes other fields), `--init <slug>` for a skeleton.
+  - Images are skipped in this version: `{ "$image": "..." }` markers are counted and listed. Keys not in the schema are reported and not written.
+- `docs/seed/` content files: one JSON file per page (`home.json` → `homePage`), other singletons with `_type`, collections as a top-level array with stable `_id`s. Paragraph arrays are JSON arrays, array items get a deterministic `_key`, missing copy is omitted with a `_todo` note. Shape in `.claude/skills/schema/seed.md` and `docs/README.md`.
+- `/schema` writes the seed files at the end of Phase 1 (Figma copy first, content draft as the fallback) and hands the seed step to Jordan after Phase 3.
+- `npm run docs` recognizes a **content draft** by keyword (`content`, every match kept, wins over `wireframe`/`overview` when a name matches both) and shows which pages have a seed file.
+- `npm run check` flags pages with no `docs/seed/<slug>.json` and open `_todo` notes in the seed files.
+
+### Changed
+- **The Figma design is the only required input.** `/schema` no longer stops when there is no overview; overview, wireframe, content draft and design brief are optional background. Where one disagrees with Figma, Figma wins and `/schema` lists every difference in its analysis instead of following the doc silently.
+- Behavior Figma can't show (CMS vs hardcoded, collections, filtering, who edits what) is asked in `/schema`'s analysis against the final design, with the docs' suggestion as the default. Jordan decides.
+- Copy priority: final copy visible in Figma, then the content draft where Figma shows placeholder text, otherwise empty and flagged. `/schema`'s analysis has a per-page copy-state item.
+- Rules are written as "the Figma design" (screenshots today), so the Figma MCP can replace screenshots later without touching anything else.
+- `.claude/settings.json` allows `npm run seed -- --dry-run` (always put `--dry-run` first). A real `npm run seed` or `--force` is not allowed and prompts.
+- `docs/README.md`, `CLAUDE.md`, `README.md`, `/schema` and `/section` updated to match.
+
+### Rules
+- Per-client order: `new-client` → `/theme` → check `/design` → `/schema` → `npm run seed -- --dry-run`, `npm run seed` → `/section` → `npm run check`.
+- `initialValue` stays in the schemas (it still helps for documents created later in Studio); for a seeded document the seed file is the copy that counts.
+
+---
+
 ## 1.2.0 (2026-11-13)
 
 Scripts-first build system: every mechanical step is a Node script in `scripts/`, and the skills call them and do only the judgment. The whole per-client flow can be run by hand without Claude. No change to the site, Studio or dependencies.

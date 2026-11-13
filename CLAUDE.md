@@ -24,11 +24,16 @@ it when Claude is doing the work:
    `docs/style-guide/tokens.json` then runs `npm run theme`.
 3. **Check `localhost:3000/design`** — confirm the colors and type look right
    before building anything.
-4. **`/schema`** — from `docs/` (overview, wireframe, screenshots), build the
-   Sanity schemas, queries and page files.
-5. **`/section home landing-hero`** — build each section component, one at a
-   time, against the real data.
-6. **`npm run check`** before launch, then the off-machine steps it lists.
+4. **`/schema`** — from the Figma design in `docs/` (screenshots; overview,
+   wireframe, content draft and brief are optional background), build the Sanity
+   schemas, queries and page files.
+   `/schema` also writes the page copy into `docs/seed/` (Phase 1).
+5. **`npm run seed -- --dry-run`, then `npm run seed`** — put that copy into
+   Sanity as published content (fill-empty only, never overwrites Studio edits).
+   Jordan runs the real one, after `/schema`'s Phase 3.
+6. **`/section home landing-hero`** — build each section component, one at a
+   time, against the real data (now with real content to look at).
+7. **`npm run check`** before launch, then the off-machine steps it lists.
 
 Anything mechanical in there is a **script**, so you can run the same steps
 without Claude. The skills call the scripts for the boilerplate and only do the
@@ -39,14 +44,24 @@ judgment (reading designs, choosing fields, building sections).
 | Command | What it does | Driven by |
 |---|---|---|
 | `npm run theme` | Style guide → `tailwind.config.js`, `globals.css`, `layout.js`, `/design`. Reads `docs/style-guide/tokens.json`. `-- --init` writes a blank one. | `/theme` |
-| `npm run docs` | Shows what `/schema` and `/section` will read in `docs/`: pages, sections, and any mis-named screenshot. `-- --json` for the skills. | `/schema`, `/section` |
+| `npm run docs` | Shows what `/schema` and `/section` will read in `docs/`: the Figma design (pages, sections), the optional background docs found (overview, wireframe, content draft, brief), and any mis-named screenshot. `-- --json` for the skills. | `/schema`, `/section` |
 | `npm run new-page -- <slug>` | Stub schema + query + page file, registered in `index.js`, `structure.js`, `presentation.js`. | `/schema` |
 | `npm run remove-page -- <slug>` | Reverses new-page (files + registration). Leaves navigation content alone. | `/schema` |
 | `npm run new-section -- <page> <section>` | Component stub with the Section wrapper, imported and placed in the page. | `/section` |
+| `npm run seed -- --dry-run` | Shows what the copy in `docs/seed/*.json` would write into Sanity, and which Studio drafts it would touch. Reads Sanity, writes nothing. `-- --dry-run --offline` checks the files only (no network, no token). | `/schema` (offline only) |
+| `npm run seed` | Writes `docs/seed/*.json` into Sanity as **published** documents. Fill-empty only: never overwrites a Studio edit. `-- <slug>` seeds one file, `-- --force` overwrites (Jordan's call), `-- --init <slug>` writes a skeleton. Reads `.env.local` itself. | by hand (Jordan) |
 | `npm run check` | Pre-launch check (see below). | by hand |
 | `node scripts/check-icon.mjs <names>` | Confirms `@sanity/icons` names exist before you import them. | `/schema` |
 | `npm run bump -- <patch\|minor\|major> "<line>"` | **Starter only.** Version bump + CHANGELOG entry. | `/promote` |
 | `npm run new-client -- --name "..."` | **Starter only.** Create a client project. | by hand |
+
+**The Figma design is the source of truth** (screenshots today, the Figma MCP
+later). It is the only required input. The overview, wireframe, content draft and
+design brief are optional background: where one disagrees with Figma, Figma wins
+and `/schema` lists the difference. Behavior Figma can't show (CMS vs hardcoded,
+collections, filtering, who edits what) is asked in `/schema`'s analysis and
+Jordan decides. Copy priority: final copy in Figma, then the content draft where
+Figma shows placeholder text, otherwise empty and flagged.
 
 Screenshots follow one convention: **one per section**,
 `NN-<page-slug>-page-<section-name>.ext`, NN restarting per page. The slug picks
@@ -60,6 +75,11 @@ the page, the section name becomes the schema group (`landingHero`) and componen
 - Never push, never deploy, never run `vercel`. Vercel deploys on push and Jordan
   pushes. Commit only when asked.
 - Never read `.env*` files (`.env.example` is fine). Never put tokens in code.
+- **Seeding is Jordan's step.** Claude may run `npm run seed -- --dry-run ...` (always
+  `--dry-run` first, so the one allow rule covers `--dry-run --offline` too) but
+  never a real `npm run seed` or `--force`: those write to Sanity and prompt.
+  `npm run seed` reads `SANITY_API_TOKEN` from `.env.local` itself; Claude still
+  never reads it.
 - Windows + Git Bash: no `tar`, no bash-only syntax in commands Jordan will run,
   no spawning `npm`/`npx` from Node without a shell. In scripts use Node APIs
   (`node:fs`, `node:path`), not shell tools.
@@ -67,7 +87,7 @@ the page, the section name becomes the schema group (`landingHero`) and componen
   `latz-starter`, you are in the starter, not a client project. Never edit or
   commit in the starter in a normal session, even to fix an obvious bug: that is
   what `/promote` is for (it ports the fix generically and bumps the version).
-  `/theme`, `/schema` and `/section` refuse to run here.
+  `/theme`, `/schema`, `/section` and `npm run seed` refuse to run here.
 - `/theme`, `/schema`, `/section`, `/promote` live in `.claude/skills/`.
   Per-client source material is in `docs/`.
 
@@ -175,8 +195,13 @@ scripts/                  the build scripts above. scripts/lib/ = shared helpers
   with `\n\n`. A single paragraph stays a plain `text` field.
 - **Image arrays (more than one image in a field) are objects with `image` and
   `alt`.** A single standalone image needs no wrapper.
-- `initialValue` comes from the final copy visible in the screenshots (headlines,
-  CTA labels, headings). Not lorem ipsum, not Figma comment pins.
+- **`docs/seed/`** holds the copy `npm run seed` writes into Sanity: one JSON file
+  per page (`home.json` → `homePage`), keys exactly the schema's field names.
+  Paragraph arrays are JSON arrays, missing copy is left out with a `_todo` note.
+  Shape and rules: `.claude/skills/schema/seed.md` and `docs/README.md`.
+- `initialValue` comes from the final copy in the Figma design (headlines, CTA
+  labels, headings), the content draft where Figma shows placeholder text. Not
+  lorem ipsum, not Figma comment pins.
 - **Icons:** `@sanity/icons` has no root named exports. One subpath import per
   icon: `import { CogIcon } from '@sanity/icons/Cog'`. Verify before use:
   `node scripts/check-icon.mjs Cog Home`. Never guess a name.
@@ -209,7 +234,9 @@ scripts/                  the build scripts above. scripts/lib/ = shared helpers
 `npm run check` flags what's easy to forget: unset env vars (by name, never
 value), `CLIENT_NAME` left in the code, placeholder CMS guide / Studio logo, no
 button kit, theme not run, the `/design/checklist` page still present, pages
-still on the title placeholder, and page registration out of sync. It can't see
+still on the title placeholder, page registration out of sync, pages with no
+`docs/seed/<slug>.json`, and open `_todo` notes in the seed files (whether Sanity
+actually has the copy: `npm run seed -- --dry-run` says "nothing to do" once it does). It can't see
 off-machine things (Sanity CORS, Vercel env vars, inviting the client, a real
 contact-form send) and lists those for you to do by hand. Remove
 `app/(site)/design/checklist` at launch.
@@ -239,9 +266,10 @@ contact-form send) and lists those for you to do by hand. Remove
 
 ## Upstream docs
 
-- Client-facing generators (overview, wireframe, design brief) run in chat and are
-  exported to `docs/`. See `docs/README.md`. The style guide goes in
-  `docs/style-guide/` for `/theme`.
+- The Figma design (screenshots) is required; the client-facing generators'
+  output (overview, wireframe, design brief) and Jordan's content draft are
+  optional background, exported to `docs/`. See `docs/README.md`. The style guide
+  goes in `docs/style-guide/` for `/theme`.
 - The older generator docs (Schema & Query, Build Companion, Style Guide, Contact
   Form System, Privacy & Accessibility) live in the Claude Code project in
   claude.ai under `reference/`. This file and the skills replace the first four

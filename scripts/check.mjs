@@ -71,6 +71,9 @@ warn(placeholderPages.length === 0, placeholderPages.length ? `pages still on th
 // ── Page registration in sync ───────────────────────────────────────────────
 checkRegistration();
 
+// ── Seed files (copy that npm run seed puts into Sanity) ────────────────────
+checkSeedFiles();
+
 // ── Report ──────────────────────────────────────────────────────────────────
 print();
 }
@@ -112,6 +115,29 @@ function checkRegistration() {
 		warn(inStructure && inPresentation && hasQuery, `${t} registered everywhere (structure${inStructure ? '' : ' ✗'}, presentation${inPresentation ? '' : ' ✗'}, query${hasQuery ? '' : ' ✗'})`);
 	}
 }
+// Offline only: every page type should have docs/seed/<slug>.json, and the
+// seed files should have no open notes. Whether Sanity actually has the copy is
+// a live question: `npm run seed -- --dry-run` answers it ("nothing to do" = seeded).
+function checkSeedFiles() {
+	const index = read('sanity/schemaTypes/index.js') || '';
+	const slugs = [...index.matchAll(/^import (\w+)Page from/gm)].map((m) => m[1].replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, ''));
+	const have = new Set(safeFiles('docs/seed').filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, '')));
+	for (const slug of slugs) warn(have.has(slug), have.has(slug) ? `docs/seed/${slug}.json exists` : `no docs/seed/${slug}.json (that page's copy is not seeded: npm run seed -- --init ${slug})`);
+	let open = 0;
+	const SYSTEM = new Set(['_type', '_id', '_key', '_ref', '_weak']);
+	const count = (v) => {
+		if (Array.isArray(v)) return v.forEach(count);
+		if (v && typeof v === 'object') for (const [k, val] of Object.entries(v)) k.startsWith('_') && !SYSTEM.has(k) ? (typeof val === 'string' && val.trim() && open++) : count(val);
+	};
+	for (const f of have) {
+		try { count(JSON.parse(read(`docs/seed/${f}.json`))); } catch { warn(false, `docs/seed/${f}.json is not valid JSON`); }
+	}
+	if (have.size) warn(open === 0, open ? `${open} open _todo/_note in docs/seed/ (npm run seed -- --dry-run --offline lists them)` : 'no open _todo/_note in docs/seed/');
+	if (have.size) hint = 'Is the copy in Sanity yet? npm run seed -- --dry-run says "nothing to do" once it is.';
+}
+const safeFiles = (rel) => (existsSync(P(rel)) ? readdirSync(P(rel), { withFileTypes: true }).filter((e) => e.isFile()).map((e) => e.name) : []);
+let hint = '';
+
 const safeReaddirFiles = (rel) => (existsSync(P(rel)) ? readdirSync(P(rel)).filter((f) => f.endsWith('.js')) : []);
 function queryFilesMention(type) {
 	for (const f of safeReaddirFiles('data/queries/pages')) {
@@ -131,6 +157,8 @@ function print() {
 		const mark = r.ok ? c.green('✓') : r.level === 'blocker' ? c.red('✗') : c.yellow('!');
 		console.log(`  ${mark} ${r.msg}`);
 	}
+
+	if (hint) console.log(`\n  ${c.dim(hint)}`);
 
 	console.log(c.bold('\nStill to do off the machine (check by hand):'));
 	for (const m of [
