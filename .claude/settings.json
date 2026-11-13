@@ -10,7 +10,6 @@
 			"Bash(npm run docs)",
 			"Bash(npm run docs *)",
 			"Bash(npm run new-page *)",
-			"Bash(npm run remove-page *)",
 			"Bash(npm run new-section *)",
 			"Bash(npm run check)",
 			"Bash(npm run bump *)",
@@ -23,6 +22,7 @@
 			"Bash(npm install)",
 			"Bash(npm install *)",
 			"Bash(npm ci)",
+			"Bash(npm run remove-page *)",
 			"Bash(git commit *)"
 		],
 		"deny": [
