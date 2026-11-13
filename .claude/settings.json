@@ -12,6 +12,8 @@
 			"Bash(npm run new-page *)",
 			"Bash(npm run new-section *)",
 			"Bash(npm run check)",
+			"Bash(npm run seed -- --dry-run)",
+			"Bash(npm run seed -- --dry-run *)",
 			"Bash(npm run bump *)",
 			"Bash(git status)",
 			"Bash(git diff)",

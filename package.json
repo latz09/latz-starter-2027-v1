@@ -19,6 +19,7 @@
 		"remove-page": "node scripts/remove-page.mjs",
 		"new-section": "node scripts/new-section.mjs",
 		"check": "node scripts/check.mjs",
+		"seed": "node scripts/seed.mjs",
 		"bump": "node scripts/bump-version.mjs",
 		"new-client": "node scripts/new-client.mjs"
 	},

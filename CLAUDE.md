@@ -27,9 +27,13 @@ it when Claude is doing the work:
 4. **`/schema`** — from the Figma design in `docs/` (screenshots; overview,
    wireframe, content draft and brief are optional background), build the Sanity
    schemas, queries and page files.
-5. **`/section home landing-hero`** — build each section component, one at a
-   time, against the real data.
-6. **`npm run check`** before launch, then the off-machine steps it lists.
+   `/schema` also writes the page copy into `docs/seed/` (Phase 1).
+5. **`npm run seed -- --dry-run`, then `npm run seed`** — put that copy into
+   Sanity as published content (fill-empty only, never overwrites Studio edits).
+   Jordan runs the real one, after `/schema`'s Phase 3.
+6. **`/section home landing-hero`** — build each section component, one at a
+   time, against the real data (now with real content to look at).
+7. **`npm run check`** before launch, then the off-machine steps it lists.
 
 Anything mechanical in there is a **script**, so you can run the same steps
 without Claude. The skills call the scripts for the boilerplate and only do the
@@ -44,6 +48,8 @@ judgment (reading designs, choosing fields, building sections).
 | `npm run new-page -- <slug>` | Stub schema + query + page file, registered in `index.js`, `structure.js`, `presentation.js`. | `/schema` |
 | `npm run remove-page -- <slug>` | Reverses new-page (files + registration). Leaves navigation content alone. | `/schema` |
 | `npm run new-section -- <page> <section>` | Component stub with the Section wrapper, imported and placed in the page. | `/section` |
+| `npm run seed -- --dry-run` | Shows what the copy in `docs/seed/*.json` would write into Sanity, and which Studio drafts it would touch. Reads Sanity, writes nothing. `-- --dry-run --offline` checks the files only (no network, no token). | `/schema` (offline only) |
+| `npm run seed` | Writes `docs/seed/*.json` into Sanity as **published** documents. Fill-empty only: never overwrites a Studio edit. `-- <slug>` seeds one file, `-- --force` overwrites (Jordan's call), `-- --init <slug>` writes a skeleton. Reads `.env.local` itself. | by hand (Jordan) |
 | `npm run check` | Pre-launch check (see below). | by hand |
 | `node scripts/check-icon.mjs <names>` | Confirms `@sanity/icons` names exist before you import them. | `/schema` |
 | `npm run bump -- <patch\|minor\|major> "<line>"` | **Starter only.** Version bump + CHANGELOG entry. | `/promote` |
@@ -69,6 +75,11 @@ the page, the section name becomes the schema group (`landingHero`) and componen
 - Never push, never deploy, never run `vercel`. Vercel deploys on push and Jordan
   pushes. Commit only when asked.
 - Never read `.env*` files (`.env.example` is fine). Never put tokens in code.
+- **Seeding is Jordan's step.** Claude may run `npm run seed -- --dry-run ...` (always
+  `--dry-run` first, so the one allow rule covers `--dry-run --offline` too) but
+  never a real `npm run seed` or `--force`: those write to Sanity and prompt.
+  `npm run seed` reads `SANITY_API_TOKEN` from `.env.local` itself; Claude still
+  never reads it.
 - Windows + Git Bash: no `tar`, no bash-only syntax in commands Jordan will run,
   no spawning `npm`/`npx` from Node without a shell. In scripts use Node APIs
   (`node:fs`, `node:path`), not shell tools.
@@ -76,7 +87,7 @@ the page, the section name becomes the schema group (`landingHero`) and componen
   `latz-starter`, you are in the starter, not a client project. Never edit or
   commit in the starter in a normal session, even to fix an obvious bug: that is
   what `/promote` is for (it ports the fix generically and bumps the version).
-  `/theme`, `/schema` and `/section` refuse to run here.
+  `/theme`, `/schema`, `/section` and `npm run seed` refuse to run here.
 - `/theme`, `/schema`, `/section`, `/promote` live in `.claude/skills/`.
   Per-client source material is in `docs/`.
 
@@ -184,6 +195,10 @@ scripts/                  the build scripts above. scripts/lib/ = shared helpers
   with `\n\n`. A single paragraph stays a plain `text` field.
 - **Image arrays (more than one image in a field) are objects with `image` and
   `alt`.** A single standalone image needs no wrapper.
+- **`docs/seed/`** holds the copy `npm run seed` writes into Sanity: one JSON file
+  per page (`home.json` → `homePage`), keys exactly the schema's field names.
+  Paragraph arrays are JSON arrays, missing copy is left out with a `_todo` note.
+  Shape and rules: `.claude/skills/schema/seed.md` and `docs/README.md`.
 - `initialValue` comes from the final copy in the Figma design (headlines, CTA
   labels, headings), the content draft where Figma shows placeholder text. Not
   lorem ipsum, not Figma comment pins.
@@ -219,7 +234,9 @@ scripts/                  the build scripts above. scripts/lib/ = shared helpers
 `npm run check` flags what's easy to forget: unset env vars (by name, never
 value), `CLIENT_NAME` left in the code, placeholder CMS guide / Studio logo, no
 button kit, theme not run, the `/design/checklist` page still present, pages
-still on the title placeholder, and page registration out of sync. It can't see
+still on the title placeholder, page registration out of sync, pages with no
+`docs/seed/<slug>.json`, and open `_todo` notes in the seed files (whether Sanity
+actually has the copy: `npm run seed -- --dry-run` says "nothing to do" once it does). It can't see
 off-machine things (Sanity CORS, Vercel env vars, inviting the client, a real
 contact-form send) and lists those for you to do by hand. Remove
 `app/(site)/design/checklist` at launch.
