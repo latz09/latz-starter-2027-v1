@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Latz Starter: Start Here</title>
+<style>
+	:root {
+		--bg: #f6f5f1;
+		--card: #ffffff;
+		--ink: #1b1b1b;
+		--muted: #6b6b66;
+		--line: #e2e0d8;
+		--accent: #1f4fd8;
+		--you: #1f4fd8;
+		--claude: #7a3fd1;
+		--web: #b45309;
+		--warn-bg: #fff4e5;
+		--warn-line: #f0b86b;
+	}
+	* { box-sizing: border-box; }
+	body {
+		margin: 0;
+		background: var(--bg);
+		color: var(--ink);
+		font: 17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	}
+	main { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+	h1 { font-size: 2rem; margin: 0 0 6px; }
+	h2 { font-size: 1.3rem; margin: 44px 0 12px; }
+	p { margin: 0 0 12px; }
+	.sub { color: var(--muted); margin-bottom: 24px; }
+	a { color: var(--accent); }
+	code {
+		font: 0.92em ui-monospace, SFMono-Regular, Consolas, monospace;
+		background: #efede6;
+		padding: 1px 6px;
+		border-radius: 4px;
+	}
+	.card {
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 18px 20px;
+		margin-bottom: 14px;
+	}
+	.warn {
+		background: var(--warn-bg);
+		border: 1px solid var(--warn-line);
+		border-radius: 10px;
+		padding: 14px 18px;
+		margin: 14px 0;
+	}
+	.warn strong { display: block; margin-bottom: 4px; }
+	ul { margin: 6px 0 0; padding-left: 22px; }
+	li { margin-bottom: 4px; }
+
+	.step { display: grid; grid-template-columns: 28px 1fr; gap: 14px; }
+	.step input[type=checkbox] { width: 22px; height: 22px; margin-top: 4px; accent-color: var(--accent); cursor: pointer; }
+	.step h3 { margin: 0 0 4px; font-size: 1.1rem; }
+	.step.done h3 { text-decoration: line-through; color: var(--muted); }
+	.tag {
+		display: inline-block;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		padding: 2px 8px;
+		border-radius: 999px;
+		color: #fff;
+		margin-left: 8px;
+		vertical-align: middle;
+	}
+	.tag.you { background: var(--you); }
+	.tag.claude { background: var(--claude); }
+	.tag.web { background: var(--web); }
+
+	.cmd {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		background: #1b1b1b;
+		color: #f2f2f2;
+		border-radius: 8px;
+		padding: 8px 8px 8px 14px;
+		margin: 8px 0;
+		font: 0.9rem ui-monospace, SFMono-Regular, Consolas, monospace;
+	}
+	.cmd span { flex: 1; overflow-x: auto; white-space: pre; }
+	.cmd button {
+		background: #3a3a3a;
+		color: #fff;
+		border: 0;
+		border-radius: 6px;
+		padding: 5px 12px;
+		cursor: pointer;
+		font: inherit;
+		font-size: 0.8rem;
+	}
+	.cmd button:hover { background: #505050; }
+
+	table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+	th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+	th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+	.toolbar { display: flex; gap: 10px; align-items: center; margin: 8px 0 0; color: var(--muted); font-size: 0.9rem; }
+	.toolbar button {
+		background: transparent; border: 1px solid var(--line); border-radius: 6px;
+		padding: 4px 10px; cursor: pointer; color: var(--muted); font: inherit; font-size: 0.85rem;
+	}
+	@media print { .cmd button, .toolbar button { display: none; } body { background: #fff; } }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Latz Starter: Start Here</h1>
+<p class="sub">The whole per-client flow, in order. The README is the full reference; this page is the checklist you work down.</p>
+<div class="toolbar">
+	<span>Checkboxes save in this browser, per file location.</span>
+	<button type="button" id="reset">Reset all</button>
+</div>
+
+<!-- ============ BEFORE YOU START ============ -->
+<h2>Before you start</h2>
+<div class="card">
+	<ul>
+		<li><strong>Figma screenshots exported</strong>, one per section, no comment pins or annotation UI. This is the only required input.</li>
+		<li><strong>Style guide done</strong> (colors, fonts, buttons, spacing), ready to drop in <code>docs/style-guide/</code>.</li>
+		<li><strong>Client name</strong> and <strong>live domain</strong>, if you have them.</li>
+		<li><strong>Optional background:</strong> overview, wireframe, content draft, design brief. If any of these disagree with Figma, Figma wins.</li>
+		<li><strong>Machine check:</strong> Node 22.12 or newer (<code>node -v</code>), latest starter pulled (<code>git checkout main</code> then <code>git pull</code>), logged in to Sanity.</li>
+	</ul>
+</div>
+
+<div class="warn">
+	<strong>Two rules that never change</strong>
+	Claude never pushes or deploys, and you run <code>npm run dev</code> in your own terminal. Claude edits files, runs build and lint, and stops.
+</div>
+
+<!-- ============ STEPS ============ -->
+<h2>The flow</h2>
+
+<div class="card step" data-id="s1">
+	<input type="checkbox" aria-label="Done">
+	<div>
+		<h3>1. Create the client project <span class="tag you">You</span></h3>
+		<p>Run this from the <strong>starter</strong> folder (not a client folder). It copies the starter, installs, creates the Sanity org and project, writes <code>.env.local</code>, and makes the first commit. It never pushes.</p>
+		<div class="cmd"><span>npm run new-client -- --name "Client Name" --domain clientdomain.com</span><button type="button">Copy</button></div>
+		<p>Then open the new folder (it lands next to the starter) in VS Code with Claude Code. Add the starter folder only when you need <code>/promote</code>.</p>
+	</div>
+</div>
+
+<div class="card step" data-id="s2">
+	<input type="checkbox" aria-label="Done">
+	<div>
+		<h3>2. Drop the source material in <code>docs/</code> <span class="tag you">You</span></h3>
+		<ul>
+			<li><strong>Figma screenshots</strong> go straight in <code>docs/</code>. Name them <code>NN-&lt;page-slug&gt;-page-&lt;section&gt;.png</code>, for example <code>01-home-page-landing-hero.png</code>. The number keeps top-to-bottom order.</li>
+			<li><strong>Style guide</strong> goes in <code>docs/style-guide/</code>.</li>
+			<li><strong>Optional:</strong> overview, wireframe, content draft, design brief in <code>docs/</code>.</li>
+		</ul>
+		<div class="cmd"><span>npm run docs</span><button type="button">Copy</button></div>
+		<p>That shows exactly what <code>/schema</code> and <code>/section</code> will read. Fix anything it flags before moving on.</p>
+	</div>
+</div>
+
+<div class="card step" data-id="s3">
+	<input type="checkbox" aria-label="Done">
+	<div>
+		<h3>3. Build the design system <span class="tag claude">Claude</span> <span class="tag you">You review</span></h3>
+		<p>In Claude Code run <code>/theme</code>. It reads the style guide, writes <code>docs/style-guide/tokens.json</code>, and <strong>pauses for your review</strong>. Approve it and it runs the theme script (Tailwind config, <code>globals.css</code>, fonts, theme config).</p>
+		<p>Then start <code>npm run dev</code> in your terminal and open <code>/design</code> to check buttons, colors and typography.</p>
+		<p>Manual version without Claude:</p>
+		<div class="cmd"><span>npm run theme</span><button type="button">Copy</button></div>
+		<div class="cmd"><span>npm run theme -- --init</span><button type="button">Copy</button></div>
+		<p>(<code>--init</code> writes a blank <code>tokens.json</code> to fill in by hand.)</p>
+	</div>
+</div>
+
+<div class="card step" data-id="s4">
+	<input type="checkbox" aria-label="Done">
+	<div>
+		<h3>4. Schemas, queries and page files <span class="tag claude">Claude</span> <span class="tag you">You approve</span></h3>
+		<p>Run <code>/schema</code>. It shows an analysis first (including where optional docs disagree with Figma) and asks behavior questions. Then it builds in <strong>three phases</strong>. Approve each phase before it moves on. At the end of Phase 1 it writes the page copy to <code>docs/seed/</code>.</p>
+		<p>Need a page or section by hand:</p>
+		<div class="cmd"><span>npm run new-page -- &lt;slug&gt;</span><button type="button">Copy</button></div>
+		<div class="cmd"><span>npm run new-section -- &lt;page&gt; &lt;section&gt;</span><button type="button">Copy</button></div>
+		<div class="cmd"><span>npm run remove-page -- &lt;slug&gt;</span><button type="button">Copy</button></div>
+	</div>
+</div>
+
+<div class="card step" data-id="s5">
+	<input type="checkbox" aria-label="Done">
+	<div>
+		<h3>5. Seed the copy into Sanity <span class="tag you">You</span></h3>
+		<p>Only after <code>/schema</code> Phase 3. Always in this order. Seeding is fill-empty only and never overwrites Studio edits.</p>
+		<div class="cmd"><span>npm run seed -- --dry-run --offline</span><button type="button">Copy</button></div>
+		<p>Checks the seed files themselves, no network.</p>
+		<div class="cmd"><span>npm run seed -- --dry-run</span><button type="button">Copy</button></div>
+		<p>Shows what would be written to Sanity, and names any drafts it would fill.</p>
+		<div class="cmd"><span>npm run seed</span><button type="button">Copy</button></div>
+		<p>The real write. Then open <code>/latz-studio</code> and confirm the content is there.</p>
+		<div class="warn">
+			<strong>Never <code>--force</code> on a site with real edits</strong>
+			<code>--force</code> overwrites. On a live client, run a dry run first, every time. Images are skipped for now: upload them in the Studio.
+		</div>
+	</div>
+</div>
+
+<div class="card step" data-id="s6">
+	<input type="checkbox" aria-label="Done">
+	<div>
+		<h3>6. Build each section <span class="tag claude">Claude</span> <span class="tag you">You review on localhost</span></h3>
+		<p>One section at a time, from its screenshot, against the page's real query:</p>
+		<div class="cmd"><span>/section home landing-hero</span><button type="button">Copy</button></div>
+		<p>It ends with what to check on localhost. Review, then do the next one. Claude runs build and lint after each.</p>
+	</div>
+</div>
+
+<div class="card step" data-id="s7">
+	<input type="checkbox" aria-label="Done">
+	<div>
+		<h3>7. Per-client settings <span class="tag you">You</span></h3>
+		<ul>
+			<li><code>sanity/branding.js</code>: Studio title, logo, CMS guide URL.</li>
+			<li><code>public/cms-guide.html</code>: replace the placeholder with the client's editing guide. Keep its <code>noindex</code> meta tag.</li>
+			<li><code>data/config/contact.js</code>: form fields, colors, email copy.</li>
+			<li><code>data/config/redirects.mjs</code>: old URLs, for rebuilds.</li>
+			<li><code>.env.local</code>: add <code>RESEND_API_KEY</code> and <code>CLIENT_EMAIL</code>.</li>
+			<li>Studio, SEO Settings: fill in everything, including Site URL (must match <code>NEXT_PUBLIC_SITE_URL</code>) and Email Logo.</li>
+			<li>Test the Presentation tool (live preview and click to edit).</li>
+			<li>Test the contact form end to end.</li>
+		</ul>
+	</div>
+</div>
+
+<div class="card step" data-id="s8">
+	<input type="checkbox" aria-label="Done">
+	<div>
+		<h3>8. Pre-launch check <span class="tag you">You</span></h3>
+		<div class="cmd"><span>npm run check</span><button type="button">Copy</button></div>
+		<div class="cmd"><span>npm run build</span><button type="button">Copy</button></div>
+		<div class="cmd"><span>npm run lint</span><button type="button">Copy</button></div>
+		<p>Fix everything they report. Remove <code>/design</code> and its checklist at launch.</p>
+	</div>
+</div>
+
+<div class="card step" data-id="s9">
+	<input type="checkbox" aria-label="Done">
+	<div>
+		<h3>9. Off-machine items <span class="tag web">Browser</span> <span class="tag you">You</span></h3>
+		<p>These can't be done from the repo:</p>
+		<ul>
+			<li><strong>GitHub:</strong> create the client repo, <code>git remote add origin &lt;url&gt;</code>, <code>git push -u origin main</code>.</li>
+			<li><strong>Vercel:</strong> import the repo. Copy <strong>every</strong> value from <code>.env.local</code> into Vercel env vars (Production and Preview), then redeploy. <code>NEXT_PUBLIC_*</code> values are baked in at build time.</li>
+			<li><strong>Vercel Node version:</strong> an open <code>engines</code> range builds on the newest Node. To match local Node 22, set <code>"22.x"</code> in that client's <code>package.json</code>.</li>
+			<li><strong>Sanity CORS</strong> for the live domain, with Allow credentials (skip if you passed <code>--domain</code> in step 1):</li>
+		</ul>
+		<div class="cmd"><span>npx sanity cors add https://clientdomain.com --credentials</span><button type="button">Copy</button></div>
+		<div class="cmd"><span>npx sanity cors add https://www.clientdomain.com --credentials</span><button type="button">Copy</button></div>
+		<ul>
+			<li><strong>No wildcard</strong> like <code>https://*.vercel.app</code>. Add an exact preview URL only if needed, and remove it afterwards.</li>
+			<li><strong>Invite the client:</strong> sanity.io/manage, their organization, project, Members, Invite as Editor.</li>
+			<li><strong>At handover:</strong> transfer the Sanity organization's billing and ownership to the client.</li>
+		</ul>
+	</div>
+</div>
+
+<!-- ============ QUICK REFERENCE ============ -->
+<h2>Quick reference</h2>
+<div class="card">
+	<table>
+		<thead><tr><th>Command</th><th>What it does</th></tr></thead>
+		<tbody>
+			<tr><td><code>npm run dev</code></td><td>Dev server on :3000 (site and Studio). You run it, not Claude.</td></tr>
+			<tr><td><code>npm run docs</code></td><td>Shows what <code>/schema</code> and <code>/section</code> will read in <code>docs/</code></td></tr>
+			<tr><td><code>npm run theme</code></td><td>Style guide tokens to design system</td></tr>
+			<tr><td><code>npm run new-page -- &lt;slug&gt;</code></td><td>Scaffold and register a page</td></tr>
+			<tr><td><code>npm run new-section -- &lt;page&gt; &lt;section&gt;</code></td><td>Scaffold a section and wire it in</td></tr>
+			<tr><td><code>npm run remove-page -- &lt;slug&gt;</code></td><td>Remove a page (asks first)</td></tr>
+			<tr><td><code>npm run seed</code></td><td>Write <code>docs/seed/*.json</code> to Sanity. Flags: <code>--dry-run</code>, <code>--offline</code>, <code>--force</code>, <code>--init &lt;slug&gt;</code>, or a slug to seed one file</td></tr>
+			<tr><td><code>npm run check</code></td><td>Pre-launch check</td></tr>
+			<tr><td><code>npm run build</code> / <code>lint</code></td><td>Production build, ESLint</td></tr>
+			<tr><td><code>npm run email:dev</code></td><td>React Email preview on :3001</td></tr>
+		</tbody>
+	</table>
+</div>
+
+<div class="card">
+	<table>
+		<thead><tr><th>Claude Code command</th><th>When</th></tr></thead>
+		<tbody>
+			<tr><td><code>/theme</code></td><td>Step 3, once per client</td></tr>
+			<tr><td><code>/schema</code></td><td>Step 4, once per client (three approval phases)</td></tr>
+			<tr><td><code>/section &lt;page&gt; &lt;section&gt;</code></td><td>Step 6, once per section</td></tr>
+			<tr><td><code>/promote</code></td><td>A fix in this client should go back into the starter. Needs the starter added as a second folder through <code>.claude/settings.local.json</code>. Never commits or pushes: review the starter's <code>git diff</code> and push yourself.</td></tr>
+		</tbody>
+	</table>
+	<p style="margin-top:12px"><code>/theme</code>, <code>/schema</code> and <code>/section</code> refuse to run inside the starter itself.</p>
+</div>
+
+<h2>If something breaks</h2>
+<div class="card">
+	<ul>
+		<li><strong>Lots of "tarball corrupted" or <code>TAR_ENTRY_ERROR</code> during install:</strong> bad npm cache. Run <code>npm cache clean --force</code>, delete <code>node_modules</code>, run <code>npm ci</code>.</li>
+		<li><strong>Live preview only updates on publish:</strong> check <code>components/ui/VisualEditingClient.js</code> (the debounced refresh handler).</li>
+		<li><strong>Studio won't load on the live domain:</strong> the domain is missing from Sanity CORS, or Allow credentials is off.</li>
+		<li><strong>A <code>.text-*</code> class does nothing:</strong> it isn't defined in <code>app/globals.css</code>. Font sizes only come from there.</li>
+		<li>Anything else: the README has the full reference.</li>
+	</ul>
+</div>
+
+</main>
+
+<script>
+(function () {
+	// Copy buttons
+	document.querySelectorAll('.cmd button').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			var text = btn.parentElement.querySelector('span').textContent;
+			var done = function () {
+				btn.textContent = 'Copied';
+				setTimeout(function () { btn.textContent = 'Copy'; }, 1200);
+			};
+			if (navigator.clipboard && navigator.clipboard.writeText) {
+				navigator.clipboard.writeText(text).then(done, done);
+			} else {
+				var ta = document.createElement('textarea');
+				ta.value = text;
+				document.body.appendChild(ta);
+				ta.select();
+				try { document.execCommand('copy'); } catch (e) {}
+				document.body.removeChild(ta);
+				done();
+			}
+		});
+	});
+
+	// Checkboxes (light per-browser convenience, safe if storage is blocked)
+	var KEY = 'latz-start-here:' + location.pathname;
+	var state = {};
+	try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+	function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+	document.querySelectorAll('.step').forEach(function (step) {
+		var id = step.getAttribute('data-id');
+		var box = step.querySelector('input[type=checkbox]');
+		if (state[id]) { box.checked = true; step.classList.add('done'); }
+		box.addEventListener('change', function () {
+			state[id] = box.checked;
+			step.classList.toggle('done', box.checked);
+			save();
+		});
+	});
+
+	document.getElementById('reset').addEventListener('click', function () {
+		state = {};
+		save();
+		document.querySelectorAll('.step').forEach(function (s) {
+			s.classList.remove('done');
+			s.querySelector('input[type=checkbox]').checked = false;
+		});
+	});
+})();
+</script>
+</body>
+</html>

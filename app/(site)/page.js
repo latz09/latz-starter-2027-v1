@@ -13,8 +13,16 @@ const Home = async () => {
 
 	return (
 		<PageContainer>
-			<Section as='header' className='grid place-items-center text-center'>
+			<Section
+				as='header'
+				className='grid gap-1 place-items-center text-center'
+			>
 				<h1>{data?.title ?? 'Home'}</h1>
+				{process.env.NODE_ENV === 'development' && (
+					<a href='/start-here' className='underline'>
+						Start here
+					</a>
+				)}
 			</Section>
 		</PageContainer>
 	);
