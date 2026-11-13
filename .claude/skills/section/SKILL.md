@@ -32,7 +32,7 @@ Do all of this first, silently:
 - File in `components/sections/<Page>/<SectionName>.js` (or the folder convention the project already uses). Default export. `.js` only.
 - **Spread props:** the page spreads the schema group (`<Hero {...hero} />`) and the component destructures named props. Update the page file to render the component. For a compound query, pass the collection as its own prop next to the spread.
 - Wrap in `<Section>`: `as='header'` for the page hero, `bg` for full-bleed color, `py` only to override the default, `className` for layout. Do not edit `Section.js`.
-- `<ButtonLink>` for every CTA, with an explicit `variant`. `<SanityImage>` for every CMS image: fixed-frame slot gets a named `IMAGE_PRESETS` entry (one per component), variable-aspect slot gets `customSize` from source metadata. `fill` only inside a `relative` box with a height. Real `alt` text.
+- `<ButtonLink>` for every CTA, with an explicit `variant`. Read `VARIANTS` and pick one that contrasts with the section background: on a `bg-primary` band, `primary-on-dark` is primary on primary and disappears. `<SanityImage>` for every CMS image: fixed-frame slot gets a named `IMAGE_PRESETS` entry (one per component), variable-aspect slot gets `customSize` from source metadata. `fill` only inside a `relative` box with a height. Real `alt` text.
 - One `h1` per page. The hero uses `h1`, every other section starts at `h2`.
 - Type: `h1`-`h6` plus only the `.text-*` classes confirmed in this client's `globals.css`. Color: only the six slots. Spacing: literal-rem keys from the config. No literal `py-${n}`.
 - Strings from the CMS used in comparisons: `stegaClean()`.

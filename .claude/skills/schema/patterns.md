@@ -56,7 +56,7 @@ export default {
 
 A page that previews content owned by a page not being built yet (Home previews Services): create the collection now, query it from Home as a compound query, reuse it later. Do not duplicate the content as inline fields.
 
-**Testimonials.** Default flat shape: `quote`, `authorName`, `authorRole`, optional `photo`, `featured` (boolean), `order`. The starter already has `testimonials.js`: extend it to match the design. Matched-or-fallback (`seriesTag` + `isDefault`) only when the project has a product or series concept for testimonials to match against.
+**Testimonials.** The starter already has `testimonials.js` (type `testimonial`: `name`, `roleOrCompany`, `quote`, `photo`, `order`). Extend that file, keep its field names, and add `featured` (boolean, default false) when the design shows only some quotes. Query featured ones as `*[_type == "testimonial" && featured == true] | order(order asc){ _id, quote, name, roleOrCompany }`. Matched-or-fallback (`seriesTag` + `isDefault`) only when the project has a product or series concept for testimonials to match against. Drop the file entirely if the design has no testimonials.
 
 **Shared icon or badge collection.** When small graphics are reused across schemas (service icons, badges, partner logos), one document type named `icon` with `name`, optional `category` (radio list), and `image`. Reference it with `{ type: 'reference', to: [{ type: 'icon' }] }` and project `"iconUrl": icon->image.asset->url`. Keep the type name `icon` even when it holds badges.
 

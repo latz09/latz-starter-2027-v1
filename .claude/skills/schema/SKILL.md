@@ -73,6 +73,7 @@ After approval:
 
 - `app/(site)/<slug>/page.js` per page, `app/(site)/page.js` for home. Follow an existing starter page: `BPM` in `generateMetadata`, `fc(Q)`, `PageContainer`, content inside `<Section>`, `export const revalidate = 10`. Placeholder content shows the page title (`data?.title`, or `data?.page?.title` for compound). Do not write section components: `/section` does that.
 - If a section component already exists in `components/`, wire it with spread props. Otherwise leave the placeholder.
+- **Existing page files whose query became compound** (`{ page, ... }`) must switch to `data?.page?.title` and `data?.page?.<group>`. Otherwise they silently fall back to the placeholder title with no error. Check every page file against its final query.
 - Dynamic routes use the pattern in `patterns.md` (`generateStaticParams` with `sanityClient`, params to `BPM`).
 - **`sanity/presentation.js`:** add every new page to `PAGES`, remove pages that no longer exist. Dynamic routes go in `mainDocuments` with a `$slug` filter. Add `siteSettings` to `GLOBAL_TYPES` if it exists.
 - **Home page:** remove `ProjectChecklist` from `app/(site)/page.js`. Do not delete the component. Create `app/(site)/design/checklist/page.js` that renders it inside a `<Section>` (the `/design` layout already noindexes it and the sitemap excludes `/design`). Tell Jordan: it moves to `/design/checklist` because its items (Resend, CORS, inviting the client, SEO settings) are usually still open. Remove the page at launch.
