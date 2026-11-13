@@ -21,9 +21,11 @@ module.exports = {
 			black: '#000000',
 		},
 
+		// Single-font by default: one face, loaded in app/layout.js as
+		// --font-heading, which every h1-h6 and .text-* rule in globals.css
+		// uses. A split-font style guide adds --font-body (see /theme).
 		fontFamily: {
-			default: ['var(--font-fustat)', ...fontFamily.sans],
-			secondary: ['var(--font-open-sans)', ...fontFamily.sans],
+			default: ['var(--font-heading)', ...fontFamily.sans],
 		},
 
 		// Emptied out — this project's type sizes come from the clamp()-based

@@ -1,9 +1,18 @@
+// components/forms/ContactForm.js
+// Pure presentational renderer. Loops `fields` (from contactConfig.formFields)
+// and renders the right input per field.type. Adding or removing a field is
+// a data/config/contact.js change only, never a JSX change here.
+//
+// Starter styling is deliberately plain. Restyle per client against the
+// actual design, keeping the structure (grid, success/reset button) intact.
+
 const baseInputClasses =
 	'w-full px-1 py-0.75 border border-dark/20 rounded bg-white text-paragraph focus:outline-none focus:border-secondary transition-all duration-300';
 
-// One field, any type. This is the whole reason ContactForm.js used to need
-// editing for one-off fields — now a new field is a clientConfig.js entry,
-// not a JSX change.
+// Field types that span both columns at lg+: a textarea looks cramped at
+// half width, and a radio group's option count rarely fits one column.
+const FULL_WIDTH_TYPES = ['textarea', 'radio'];
+
 const renderField = (field, formData, handleInputChange) => {
 	const value = formData[field.name] ?? '';
 
@@ -74,7 +83,7 @@ const renderField = (field, formData, handleInputChange) => {
 			);
 
 		default:
-			// text, email, tel — and anything else a plain <input type="..."> already knows how to be
+			// text, email, tel, and anything else a plain <input type="..."> handles
 			return (
 				<input
 					type={field.type}
@@ -95,25 +104,23 @@ const ContactForm = ({
 	formData,
 	handleInputChange,
 	handleSubmit,
+	handleReset,
 	isLoading,
 	error,
 	success,
 }) => {
 	return (
-		<form
-			onSubmit={handleSubmit}
-			className='w-full max-w-3xl mx-auto px-1 py-2'
-		>
-			<div className='mb-2'>
-				<h2>Get in Touch</h2>
-				<p className='text-paragraph text-dark/60'>
-					Fill out the form below and we will get back to you shortly.
-				</p>
-			</div>
-
-			<div className='space-y-1.5 mb-2'>
+		<form onSubmit={handleSubmit} className='w-full'>
+			<div
+				className={`grid lg:grid-cols-2 gap-1.5 mb-2 transition-opacity duration-300 ${
+					success ? 'opacity-75' : ''
+				}`}
+			>
 				{fields.map((field) => (
-					<div key={field.name}>
+					<div
+						key={field.name}
+						className={FULL_WIDTH_TYPES.includes(field.type) ? 'lg:col-span-2' : ''}
+					>
 						<label
 							htmlFor={field.name}
 							className='text-caption font-semibold block mb-0.5'
@@ -126,22 +133,40 @@ const ContactForm = ({
 				))}
 			</div>
 
+			{/*
+			  After a successful send, this button becomes the status message AND
+			  the reset control. It MUST switch to type="button" in that state: the
+			  fields are empty after reset, so a submit button would be blocked by
+			  the browser's required-field validation before handleReset ever ran.
+			*/}
 			<button
-				type='submit'
+				type={success ? 'button' : 'submit'}
+				onClick={success ? handleReset : undefined}
 				disabled={isLoading}
-				className='w-full bg-primary text-button text-white py-0.75 rounded border border-primary hover:opacity-90 active:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300'
+				className={`group w-full text-button py-0.75 rounded border border-primary transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
+					success
+						? 'bg-white text-primary'
+						: 'bg-primary text-white hover:bg-white hover:text-primary'
+				}`}
 			>
-				{isLoading ? 'Sending...' : 'Send Message'}
+				{isLoading ? (
+					'Sending...'
+				) : success ? (
+					<>
+						<span className='group-hover:hidden'>Message sent successfully</span>
+						<span className='hidden group-hover:inline'>Send another message?</span>
+					</>
+				) : (
+					'Send Message'
+				)}
 			</button>
 
 			{error && (
-				<p className='mt-1 p-1 rounded border border-dark/20 text-caption text-dark/70 bg-white'>
+				<p
+					role='alert'
+					className='mt-1 p-1 rounded border border-dark/20 text-caption text-dark/70 bg-white'
+				>
 					{error}
-				</p>
-			)}
-			{success && (
-				<p className='mt-1 p-1 rounded border border-secondary text-caption text-primary bg-white'>
-					{success}
 				</p>
 			)}
 		</form>

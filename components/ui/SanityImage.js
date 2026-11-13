@@ -1,10 +1,15 @@
-import { getHotspotStyles, getSanityImageUrl, IMAGE_PRESETS } from '@/utils/cms/getSanityImageUrl';
+import {
+  DEFAULT_IMAGE_SIZE,
+  getHotspotStyles,
+  getSanityImageUrl,
+  IMAGE_PRESETS,
+} from '@/utils/cms/getSanityImageUrl';
 import Image from 'next/image';
 
 const SanityImage = ({ 
   image, 
   alt = '', 
-  preset = 'fullWidth',
+  preset,
   customSize = null,
   className = '',
   fill = false,
@@ -14,8 +19,13 @@ const SanityImage = ({
 }) => {
   if (!image?.asset) return null;
 
-  const sizeOptions = customSize || IMAGE_PRESETS[preset] || IMAGE_PRESETS.fullWidth;
+  if (preset && !IMAGE_PRESETS[preset] && process.env.NODE_ENV === 'development') {
+    console.warn(`SanityImage: no IMAGE_PRESETS entry named "${preset}". Using the default size.`);
+  }
+
+  const sizeOptions = customSize || IMAGE_PRESETS[preset] || DEFAULT_IMAGE_SIZE;
   const imageUrl = getSanityImageUrl(image, sizeOptions);
+  if (!imageUrl) return null;
   const hotspotStyles = getHotspotStyles(image);
 
   if (fill) {

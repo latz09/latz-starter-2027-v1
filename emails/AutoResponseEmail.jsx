@@ -108,7 +108,7 @@ export default function AutoResponseEmail({
 				))}
 
 				<FieldRow
-					field={{ name: 'sentAt', label: 'Sent', type: 'text' }}
+					field={{ name: 'submittedAt', label: 'Sent', type: 'text' }}
 					value={timestamp}
 					colors={colors}
 					isLast

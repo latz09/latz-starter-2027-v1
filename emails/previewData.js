@@ -16,14 +16,14 @@ export const previewBranding = {
 export const previewFields = [
 	{ name: 'name', label: 'Name', type: 'text' },
 	{ name: 'email', label: 'Email', type: 'email' },
-	{ name: 'phoneNumber', label: 'Phone Number', type: 'tel' },
+	{ name: 'phone', label: 'Phone Number', type: 'tel' },
 	{ name: 'message', label: 'How can we help?', type: 'textarea' },
 ];
 
 export const previewFormData = {
 	name: 'Sarah Johnson',
 	email: 'sarah@example.com',
-	phoneNumber: '(715) 555-0192',
+	phone: '(715) 555-0192',
 	message:
 		"Hi! I'm interested in getting a quote for a new website. Could someone give me a call this week?",
 };

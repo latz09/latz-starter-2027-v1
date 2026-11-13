@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -25,6 +25,22 @@ const modalVariants = {
 	},
 };
 
+// True only in the browser, after hydration. Portals need `document`.
+const noopSubscribe = () => () => {};
+const useIsClient = () =>
+	useSyncExternalStore(noopSubscribe, () => true, () => false);
+
+// Portal target: #modal-root if the layout has one, created on first use if not.
+const getModalRoot = () => {
+	let el = document.getElementById('modal-root');
+	if (!el) {
+		el = document.createElement('div');
+		el.id = 'modal-root';
+		document.body.appendChild(el);
+	}
+	return el;
+};
+
 const BaseModal = ({
 	isOpen,
 	onClose,
@@ -32,23 +48,8 @@ const BaseModal = ({
 	className = '',
 	backdropClass = 'bg-dark/60 backdrop-blur-sm',
 }) => {
-	const [mounted, setMounted] = useState(false);
-	const modalRootRef = useRef(null);
-
-	useEffect(() => {
-		setMounted(true);
-		modalRootRef.current = document.getElementById('modal-root');
-
-		// Fallback in case it doesn't exist
-		if (!modalRootRef.current) {
-			const el = document.createElement('div');
-			el.id = 'modal-root';
-			document.body.appendChild(el);
-			modalRootRef.current = el;
-		}
-	}, [isOpen]);
-
-	if (!mounted || !modalRootRef.current) return null;
+	const isClient = useIsClient();
+	if (!isClient) return null;
 
 	return createPortal(
 		<AnimatePresence>
@@ -71,7 +72,7 @@ const BaseModal = ({
 
 					{/* Modal panel */}
 					<motion.div
-						className={`relative z-10 w-full max-w-xl mx-auto rounded bg-light p-6 shadow-lg ${className}`}
+						className={`relative z-10 w-full max-w-xl mx-auto rounded bg-light p-6 shadow-lifted ${className}`}
 						variants={modalVariants}
 						initial='hidden'
 						animate='visible'
@@ -82,7 +83,7 @@ const BaseModal = ({
 				</motion.div>
 			)}
 		</AnimatePresence>,
-		modalRootRef.current
+		getModalRoot()
 	);
 };
 

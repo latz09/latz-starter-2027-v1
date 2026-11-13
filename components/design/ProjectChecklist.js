@@ -1,4 +1,4 @@
-// data/set-up/ProjectChecklist.js
+// components/design/ProjectChecklist.js
 import Link from 'next/link';
 
 // Per-project setup steps pulled from what this starter template actually
@@ -23,7 +23,7 @@ const CHECKLIST = [
 		task: 'Update routes that need a light-on-dark nav',
 		location: 'data/config/navigation.js (DARK_NAV_ROUTES)',
 	},
-	{ task: 'Choose fonts and update page metadata', location: 'app/layout.js' },
+	{ task: 'Choose fonts (keep the --font-heading variable)', location: 'app/layout.js' },
 	{ task: 'Replace the logo', location: '/public/images/business-name' },
 	{
 		task: 'Fill in contact form config — branding, colors, fields, messaging',
@@ -35,9 +35,30 @@ const CHECKLIST = [
 		location: 'components/layout/footer/Footer.js, FooterBottomBar.js',
 	},
 	{
+		task: 'Set Studio title, logo and CMS guide URL',
+		location: 'sanity/branding.js',
+	},
+	{
+		task: 'Build the client\'s CMS guide page',
+		location: 'public/cms-guide.html',
+	},
+	{
+		task: 'Add the live domain to Sanity CORS (Allow credentials)',
+		location: 'npx sanity cors add https://clientdomain.com --credentials',
+	},
+	{
+		task: 'Invite the client to the Sanity project',
+		location: 'sanity.io/manage → Members',
+	},
+	{
+		task: 'Test the Presentation tool (live preview + click to edit)',
+		location: '/latz-studio/presentation',
+		href: '/latz-studio/presentation',
+	},
+	{
 		task: 'Set site URL — must match in both places',
 		location:
-			'Sanity → SEO Settings → Site URL, and NEXT_PUBLIC_SITE_URL in .env',
+			'Studio → SEO Settings → Site URL, and NEXT_PUBLIC_SITE_URL in .env.local + Vercel',
 	},
 ];
 

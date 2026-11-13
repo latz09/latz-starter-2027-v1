@@ -19,7 +19,11 @@ export function EmailLayout({ branding, previewText, footer, children }) {
 					</Section>
 
 					<Section style={header(colors)}>
-						<Img src={logoUrl} alt={`${name} Logo`} style={logo} />
+						{logoUrl ? (
+							<Img src={logoUrl} alt={`${name} Logo`} style={logo} />
+						) : (
+							<Text style={logoText(colors)}>{name}</Text>
+						)}
 					</Section>
 
 					<Section style={body(colors)}>{children}</Section>
@@ -76,6 +80,14 @@ const topBarSpacer = {
 };
 
 const logo = { maxWidth: '250px', margin: '0 auto' };
+// Shown until an Email Logo is uploaded in Studio → SEO Settings.
+const logoText = (colors) => ({
+	margin: 0,
+	textAlign: 'center',
+	fontSize: '22px',
+	fontWeight: 700,
+	color: colors.text,
+});
 
 const body = (colors) => ({
 	backgroundColor: colors.background,

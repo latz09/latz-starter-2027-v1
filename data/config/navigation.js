@@ -10,7 +10,10 @@ export const PLACEHOLDER_NAV_LINKS = [
 	{ label: 'Contact', url: '/contact', isButton: true },
 ];
 
-// Flip to true once Sanity is set up and FETCH_NAVIGATION_QUERY has real
-// content. Read by getNavLinks.js (server-only) — kept here so both the
-// client-safe and server-only files agree on one value.
-export const USE_CMS = false;
+// True once a Sanity project ID is set (new-client.mjs writes it to
+// .env.local). Until then the nav uses PLACEHOLDER_NAV_LINKS. Once connected,
+// getNavLinks.js still falls back to the placeholders while the Navigation
+// document is empty, so there's nothing to flip by hand.
+// Read by getNavLinks.js (server-only). Kept here so the client-safe and
+// server-only files agree on one value.
+export const USE_CMS = Boolean(process.env.NEXT_PUBLIC_SANITY_PROJECT_ID);

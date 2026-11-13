@@ -37,8 +37,8 @@ export default function ClientNotificationEmail({
 	timestamp = previewTimestamp,
 }) {
 	const { colors } = branding;
-	const { name, email, phoneNumber } = formData;
-	const hasPhone = Boolean(phoneNumber) && phoneNumber !== 'Not provided';
+	const { name, email, phone } = formData;
+	const hasPhone = Boolean(phone) && phone !== 'Not provided';
 
 	const gridFields = fields.filter(
 		(f) => !GRID_EXCLUDED_TYPES.includes(f.type),
@@ -82,7 +82,7 @@ export default function ClientNotificationEmail({
 					{hasPhone && (
 						<Column style={ctaColumnRight}>
 							<Button
-								href={`tel:${phoneNumber}`}
+								href={`tel:${phone}`}
 								style={secondaryButton(colors)}
 							>
 								Call {name}
@@ -132,7 +132,7 @@ export default function ClientNotificationEmail({
 				))}
 
 				<FieldRow
-					field={{ name: 'sentAt', label: 'Sent', type: 'text' }}
+					field={{ name: 'submittedAt', label: 'Sent', type: 'text' }}
 					value={timestamp}
 					colors={colors}
 					isLast

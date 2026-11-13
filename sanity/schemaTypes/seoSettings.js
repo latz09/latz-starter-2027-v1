@@ -55,6 +55,13 @@ export default {
       description: 'Social share image. 1200x630px. Used on all pages unless overridden.',
       options: { hotspot: true },
     },
+    {
+      name: 'emailLogo',
+      type: 'image',
+      title: 'Email Logo',
+      description:
+        'Logo used in automated emails (new inquiry notifications, auto-responses). PNG or JPG, not SVG: most email apps block SVG.',
+    },
 
     // ── Social ────────────────────────────────────────────────────────────
     {

@@ -15,23 +15,26 @@
  * bare number. Tailwind only generates CSS for classes it can find written
  * out literally in your source, so building one at runtime (e.g. `py-${n}`)
  * won't work; pass the whole class ('py-8'), or two space-separated classes
- * for an asymmetric one-off ('pt-4 pb-8'). Defaults to 'py-4'.
+ * for an asymmetric one-off ('pt-4 pb-8'). Defaults to 'py-5 lg:py-8.75'.
  *
  * `bg` goes on the outer tag, `py` goes on the inner div — so any background
  * color always covers the full padded height (top and bottom), not just the
  * content sitting inside it.
+ *
+ * `id` goes on the outer tag, for in-page anchor links (#services) and
+ * scroll targets.
  *
  * `className` is for anything else one-off: height, max-width, flex/grid
  * behavior on the content wrapper, etc.
  *
  * Examples:
  *
- *   // Default spacing (py-4), no background — most sections
+ *   // Default spacing (py-5 lg:py-8.75), no background — most sections
  *   <Section>
  *     <p>Just content</p>
  *   </Section>
  *   → <section>
- *       <div class="section-x-padding py-4"><p>Just content</p></div>
+ *       <div class="section-x-padding py-5 lg:py-8.75"><p>Just content</p></div>
  *     </section>
  *
  *   // Page hero — semantically a header, symmetric py-8
@@ -61,12 +64,13 @@
 const Section = ({
 	children,
 	as: Tag = 'section',
+	id,
 	bg = '',
-	py = 'py-4',
+	py = 'py-5 lg:py-8.75',
 	className = '',
 }) => {
 	return (
-		<Tag className={bg}>
+		<Tag id={id} className={bg || undefined}>
 			<div className={`section-x-padding ${py} ${className}`}>{children}</div>
 		</Tag>
 	);

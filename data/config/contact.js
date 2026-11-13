@@ -1,8 +1,15 @@
+// data/config/contact.js
+// Single source of truth for the contact form: branding, feature flags,
+// fields and all email copy. Field `name`s must match
+// sanity/schemaTypes/contactForm.js (default set: name, email, phone, message).
+// If a client's fields differ, edit that schema to match.
+
 export const contactConfig = {
 	branding: {
 		name: 'CLIENT_NAME',
-		logoUrl:
-			'https://cdn.sanity.io/images/9yfxmlzk/production/................................', // Replace with actual logo
+		// Fallback only. The live logo comes from Studio → SEO Settings → Email
+		// Logo (emailLogoUrl), so it's a stable Sanity CDN URL nobody hardcodes.
+		logoUrl: '',
 		colors: {
 			background: '#FFFDF9', // page/section background behind the logo + body
 			surface: '#F5F0E6', // "Submission Details" box background
@@ -38,7 +45,7 @@ export const contactConfig = {
 			placeholder: 'you@example.com',
 		},
 		{
-			name: 'phoneNumber',
+			name: 'phone',
 			label: 'Phone Number',
 			required: true,
 			type: 'tel',
