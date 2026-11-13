@@ -99,9 +99,9 @@ When the project is handed over, transfer billing/ownership of the client's Sani
 
 ### 7. Per-client setup
 
-The home page shows a setup checklist (`components/design/ProjectChecklist.js`) until you remove it. The short version:
+The setup checklist lives at `/design/checklist` (remove it at launch). The short version:
 
-- Theme `tailwind.config.js` + `globals.css` (fonts in `app/layout.js`, keep the `--font-heading` variable)
+- `/theme` (or `npm run theme`): the style guide → `tailwind.config.js`, `globals.css`, fonts in `app/layout.js`. Check `/design`.
 - `sanity/branding.js`: Studio logo (`logoUrl`) and CMS guide URL
 - `public/cms-guide.html`: replace the placeholder with the client's editing guide (keep its `noindex` meta tag)
 - `data/config/contact.js`: form fields, colors, email copy
@@ -180,16 +180,17 @@ The starter ships a Claude Code layer. Open the client project in VS Code with C
 | | |
 |---|---|
 | `CLAUDE.md` | Rules Claude follows in every session (Tailwind guardrails, data conventions, Section/ButtonLink/SanityImage, schema conventions, gotchas). Add the client's notes to its "Client project" section. |
-| `docs/` | Put the overview, wireframe, design brief and page screenshots (named by slug) here. See `docs/README.md`. |
+| `docs/` | Put the overview, wireframe, design brief and page screenshots here. See `docs/README.md`. The style guide goes in `docs/style-guide/`. |
+| `/theme` | Reads the style guide in `docs/style-guide/`, writes `tokens.json`, pauses for review, then runs `npm run theme` to build the design system. Step one for every client. |
 | `/schema` | Reads `docs/`, shows an analysis and questions, then builds schemas, queries and page files in three phases. Approve each phase before it moves on. |
-| `/section home hero` | Builds one section from the screenshot against the page's real query. Ends with what to check on localhost. |
-| `/promote` | Takes a fix from this client and applies a generic version to the starter. Run from the client with the starter as a second folder: `claude --add-dir ../latz-starter-2027-v1`. It never commits or pushes: review the starter's `git diff`, then commit and push yourself. |
+| `/section home landing-hero` | Builds one section from the screenshot against the page's real query. Ends with what to check on localhost. |
+| `/promote` | Takes a fix from this client and applies a generic version to the starter. Add the starter as a second folder with a personal `.claude/settings.local.json` (`permissions.additionalDirectories: ["../latz-starter-2027-v1"]`), Reload Window, then run it. It never commits or pushes: review the starter's `git diff`, then commit and push yourself. Remove the settings file afterwards. |
 
 Daily loop: keep `npm run dev` running in your own terminal and review on localhost. Claude edits files and runs `npm run build` and `npm run lint`. It does not run the dev server, push or deploy.
 
 `.claude/settings.json` allows build, lint and read-only git, asks before `npm install` and `git commit`, and denies `git push`, `vercel` and reading `.env.local` and the other real env files. These are guardrails, not a vault. Check them with `/permissions`.
 
-`/schema` and `/section` refuse to run in the starter itself. `/theme`, `/page`, `/site` and `/legal` are not built yet: theme with the Style Guide generator in chat for now.
+`/theme`, `/schema` and `/section` refuse to run in the starter itself. `/page`, `/site` and `/legal` are not built yet.
 
 ---
 
@@ -200,8 +201,18 @@ Daily loop: keep `npm run dev` running in your own terminal and review on localh
 | `npm run dev` | Dev server on :3000 (site + Studio) |
 | `npm run build` | Production build, then sitemap/robots generation |
 | `npm run lint` | ESLint (`eslint .`, Next 16 dropped `next lint`) |
+| `npm run theme` | Style guide → design system from `docs/style-guide/tokens.json` (`-- --init` writes a blank one) |
+| `npm run docs` | Show what `/schema` and `/section` will read in `docs/` |
+| `npm run new-page -- <slug>` | Scaffold + register a page |
+| `npm run remove-page -- <slug>` | Remove a page (files + registration) |
+| `npm run new-section -- <page> <section>` | Scaffold a section component and wire it in |
+| `npm run check` | Pre-launch check |
 | `npm run email:dev` | React Email preview on :3001 |
+| `npm run bump -- <type> "<line>"` | Starter only: version bump + CHANGELOG (used by `/promote`) |
 | `npm run new-client -- --name "..."` | Starter only: create a client project |
+
+Anything mechanical in the build is a script, so the whole per-client flow can be
+run by hand without Claude. The skills just call these and do the judgment.
 
 ---
 

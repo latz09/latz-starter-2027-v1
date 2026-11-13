@@ -2,20 +2,16 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from '@/tailwind.config.js';
 import Section from '../layout/Section';
+import { themePreview } from '@/data/config/theme';
 
 const fullConfig = resolveConfig(tailwindConfig);
 
 const ColorPalette = () => {
 	const colors = fullConfig.theme.colors;
 
-	const brandColors = [
-		{ name: 'Primary', var: 'primary' },
-		{ name: 'Secondary', var: 'secondary' },
-		{ name: 'Tertiary', var: 'tertiary' },
-		{ name: 'Accent', var: 'accent' },
-		{ name: 'Dark', var: 'dark' },
-		{ name: 'Light', var: 'light' },
-	];
+	// Slot list + the guide's names come from data/config/theme.js; the hexes
+	// are read live from the resolved Tailwind config so they can't drift.
+	const brandColors = themePreview.colors.map((c) => ({ name: c.name, var: c.slot }));
 
 	return (
 		<Section className='px-1 sm:px-1.25 md:px-2.5 lg:px-5 3xl:max-w-[130rem] 3xl:mx-auto border border-dark/10 shadow-soft'>

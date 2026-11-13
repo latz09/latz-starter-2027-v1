@@ -184,7 +184,8 @@ const pkgPath = path.join(targetDir, 'package.json');
 const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
 pkg.name = slug;
 pkg.version = '0.1.0';
-delete pkg.scripts['new-client'];
+// Starter-only scripts don't belong in a client project.
+for (const s of ['new-client', 'bump']) delete pkg.scripts[s];
 // Which starter this project began from, for /promote and future syncs.
 pkg.latzStarter = { version: starterVersion, commit: starterCommit };
 writeFileSync(pkgPath, `${JSON.stringify(pkg, null, '\t')}\n`);
@@ -209,8 +210,11 @@ replaceInFile(path.join(targetDir, 'data/config/contact.js'), [
 	["autoResponseClosing: 'CLIENT_NAME'", `autoResponseClosing: ${jsString(clientName)}`],
 ]);
 
-// The client repo doesn't need the generator.
-rmSync(path.join(targetDir, 'scripts/new-client.mjs'));
+// Starter-only scripts: the client repo doesn't need them.
+for (const f of ['scripts/new-client.mjs', 'scripts/bump-version.mjs']) {
+	const fp = path.join(targetDir, f);
+	if (existsSync(fp)) rmSync(fp);
+}
 ok('package.json, sanity/branding.js, data/config/contact.js');
 
 // ── 3. install ─────────────────────────────────────────────────────────────

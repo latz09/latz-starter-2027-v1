@@ -5,6 +5,14 @@
 			"Bash(npm run build)",
 			"Bash(npm run lint)",
 			"Bash(node scripts/check-icon.mjs *)",
+			"Bash(npm run theme)",
+			"Bash(npm run theme *)",
+			"Bash(npm run docs)",
+			"Bash(npm run docs *)",
+			"Bash(npm run new-page *)",
+			"Bash(npm run new-section *)",
+			"Bash(npm run check)",
+			"Bash(npm run bump *)",
 			"Bash(git status)",
 			"Bash(git diff)",
 			"Bash(git diff *)",
@@ -14,6 +22,7 @@
 			"Bash(npm install)",
 			"Bash(npm install *)",
 			"Bash(npm ci)",
+			"Bash(npm run remove-page *)",
 			"Bash(git commit *)"
 		],
 		"deny": [

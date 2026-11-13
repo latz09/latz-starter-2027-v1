@@ -1,6 +1,6 @@
 {
 	"name": "latz-starter",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"private": true,
 	"engines": {
 		"node": ">=22.12"
@@ -13,6 +13,13 @@
 		"sitemap": "next-sitemap",
 		"postbuild": "next-sitemap",
 		"email:dev": "email dev --port 3001",
+		"theme": "node scripts/theme.mjs",
+		"docs": "node scripts/docs-index.mjs",
+		"new-page": "node scripts/new-page.mjs",
+		"remove-page": "node scripts/remove-page.mjs",
+		"new-section": "node scripts/new-section.mjs",
+		"check": "node scripts/check.mjs",
+		"bump": "node scripts/bump-version.mjs",
 		"new-client": "node scripts/new-client.mjs"
 	},
 	"dependencies": {

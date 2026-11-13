@@ -17,7 +17,12 @@ Read `package.json`. If `name` is `latz-starter`, stop and say: "/section is for
 
 Do all of this first, silently:
 
-- **Screenshot:** `docs/<slug>.png`, or the numbered/named files for that page. View them and find the section. If there is no screenshot for the page, stop and ask Jordan to add one. Ignore Figma comment pins. Read `docs/design-brief*` for design intent if it exists.
+- **Screenshot:** one per section, `docs/NN-<slug>-page-<section>.ext`. Run
+  `npm run docs` to see the page's sections; `$ARGUMENTS`'s section name can be
+  loose (`/section home hero` finds `landing-hero`). **View that one screenshot**
+  and build only what it shows. If there is no screenshot for the page, stop and
+  ask Jordan to add one. Ignore Figma comment pins. Read `docs/design-brief*` for
+  design intent if it exists.
 - **Data contract:** the page file `app/(site)/<slug>/page.js` and its query in `data/queries/`. The query is the source of truth for field names. Read the section's schema group in `sanity/schemaTypes/`. If a component stub already exists, read it and cross-check its props against the query: stubs drift.
 - **This client's real design system, never the starter's or another client's:**
   - `tailwind.config.js`: the actual color slot hexes, `maxWidth`, spacing keys, radius keys.
@@ -29,8 +34,16 @@ Do all of this first, silently:
 
 ## 2. Build
 
-- File in `components/sections/<Page>/<SectionName>.js` (or the folder convention the project already uses). Default export. `.js` only.
-- **Spread props:** the page spreads the schema group (`<Hero {...hero} />`) and the component destructures named props. Update the page file to render the component. For a compound query, pass the collection as its own prop next to the spread.
+- **Scaffold first:** `npm run new-section -- <slug> <section>` creates
+  `components/sections/<Page>/<Comp>.js` (Section wrapper stub), imports it into
+  the page file and places `<Comp />` in screenshot order. Idempotent. Then build
+  the real component in that file. `.js` only, default export.
+- **Spread props:** the page spreads the schema group (`<Hero {...hero} />`) and
+  the component destructures named props. `new-section` places a bare `<Comp />`;
+  you add the spread and destructure the group from the query data (`const { hero }
+  = data?.page || data || {}` — `data?.page` for a compound query). For a compound
+  query, pass the collection as its own prop next to the spread. Remove the page's
+  placeholder `<h1>` once the hero section is built.
 - Wrap in `<Section>`: `as='header'` for the page hero, `bg` for full-bleed color, `py` only to override the default, `className` for layout. Do not edit `Section.js`.
 - `<ButtonLink>` for every CTA, with an explicit `variant`. Read `VARIANTS` and pick one that contrasts with the section background: on a `bg-primary` band, `primary-on-dark` is primary on primary and disappears. `<SanityImage>` for every CMS image: fixed-frame slot gets a named `IMAGE_PRESETS` entry (one per component), variable-aspect slot gets `customSize` from source metadata. `fill` only inside a `relative` box with a height. Real `alt` text.
 - One `h1` per page. The hero uses `h1`, every other section starts at `h2`.

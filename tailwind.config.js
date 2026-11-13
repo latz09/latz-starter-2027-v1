@@ -8,7 +8,10 @@ module.exports = {
 		'./app/**/*.{js,ts,jsx,tsx,mdx}',
 	],
 	theme: {
+		// `npm run theme` regenerates this block from docs/style-guide/tokens.json.
+		// Keep the markers. Six brand slots + the four constants; no gray-500 etc.
 		colors: {
+			/* @gen:colors start */
 			primary: '#025088',
 			secondary: '#35B3E4',
 			accent: '#DAEAEF',
@@ -19,13 +22,17 @@ module.exports = {
 			current: 'currentColor',
 			white: '#ffffff',
 			black: '#000000',
+			/* @gen:colors end */
 		},
 
 		// Single-font by default: one face, loaded in app/layout.js as
 		// --font-heading, which every h1-h6 and .text-* rule in globals.css
 		// uses. A split-font style guide adds --font-body (see /theme).
+		// `npm run theme` regenerates the keys between the markers.
 		fontFamily: {
+			/* @gen:fontFamily start */
 			default: ['var(--font-heading)', ...fontFamily.sans],
+			/* @gen:fontFamily end */
 		},
 
 		// Emptied out — this project's type sizes come from the clamp()-based
@@ -98,13 +105,18 @@ module.exports = {
 			auto: 'auto',
 		},
 
+		// `npm run theme` regenerates this from the guide's standard roundness:
+		// none / DEFAULT / full only. sm, lg, 2xl are dropped on purpose, so
+		// don't reach for them in client code.
 		borderRadius: {
+			/* @gen:borderRadius start */
 			none: '0',
 			DEFAULT: '0.5rem',
 			sm: '0.35rem',
 			lg: '1rem',
 			'2xl': '1rem',
 			full: '9999px',
+			/* @gen:borderRadius end */
 		},
 
 		boxShadow: {
