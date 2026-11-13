@@ -24,8 +24,9 @@ it when Claude is doing the work:
    `docs/style-guide/tokens.json` then runs `npm run theme`.
 3. **Check `localhost:3000/design`** — confirm the colors and type look right
    before building anything.
-4. **`/schema`** — from `docs/` (overview, wireframe, screenshots), build the
-   Sanity schemas, queries and page files.
+4. **`/schema`** — from the Figma design in `docs/` (screenshots; overview,
+   wireframe, content draft and brief are optional background), build the Sanity
+   schemas, queries and page files.
 5. **`/section home landing-hero`** — build each section component, one at a
    time, against the real data.
 6. **`npm run check`** before launch, then the off-machine steps it lists.
@@ -39,7 +40,7 @@ judgment (reading designs, choosing fields, building sections).
 | Command | What it does | Driven by |
 |---|---|---|
 | `npm run theme` | Style guide → `tailwind.config.js`, `globals.css`, `layout.js`, `/design`. Reads `docs/style-guide/tokens.json`. `-- --init` writes a blank one. | `/theme` |
-| `npm run docs` | Shows what `/schema` and `/section` will read in `docs/`: pages, sections, and any mis-named screenshot. `-- --json` for the skills. | `/schema`, `/section` |
+| `npm run docs` | Shows what `/schema` and `/section` will read in `docs/`: the Figma design (pages, sections), the optional background docs found (overview, wireframe, content draft, brief), and any mis-named screenshot. `-- --json` for the skills. | `/schema`, `/section` |
 | `npm run new-page -- <slug>` | Stub schema + query + page file, registered in `index.js`, `structure.js`, `presentation.js`. | `/schema` |
 | `npm run remove-page -- <slug>` | Reverses new-page (files + registration). Leaves navigation content alone. | `/schema` |
 | `npm run new-section -- <page> <section>` | Component stub with the Section wrapper, imported and placed in the page. | `/section` |
@@ -47,6 +48,14 @@ judgment (reading designs, choosing fields, building sections).
 | `node scripts/check-icon.mjs <names>` | Confirms `@sanity/icons` names exist before you import them. | `/schema` |
 | `npm run bump -- <patch\|minor\|major> "<line>"` | **Starter only.** Version bump + CHANGELOG entry. | `/promote` |
 | `npm run new-client -- --name "..."` | **Starter only.** Create a client project. | by hand |
+
+**The Figma design is the source of truth** (screenshots today, the Figma MCP
+later). It is the only required input. The overview, wireframe, content draft and
+design brief are optional background: where one disagrees with Figma, Figma wins
+and `/schema` lists the difference. Behavior Figma can't show (CMS vs hardcoded,
+collections, filtering, who edits what) is asked in `/schema`'s analysis and
+Jordan decides. Copy priority: final copy in Figma, then the content draft where
+Figma shows placeholder text, otherwise empty and flagged.
 
 Screenshots follow one convention: **one per section**,
 `NN-<page-slug>-page-<section-name>.ext`, NN restarting per page. The slug picks
@@ -175,8 +184,9 @@ scripts/                  the build scripts above. scripts/lib/ = shared helpers
   with `\n\n`. A single paragraph stays a plain `text` field.
 - **Image arrays (more than one image in a field) are objects with `image` and
   `alt`.** A single standalone image needs no wrapper.
-- `initialValue` comes from the final copy visible in the screenshots (headlines,
-  CTA labels, headings). Not lorem ipsum, not Figma comment pins.
+- `initialValue` comes from the final copy in the Figma design (headlines, CTA
+  labels, headings), the content draft where Figma shows placeholder text. Not
+  lorem ipsum, not Figma comment pins.
 - **Icons:** `@sanity/icons` has no root named exports. One subpath import per
   icon: `import { CogIcon } from '@sanity/icons/Cog'`. Verify before use:
   `node scripts/check-icon.mjs Cog Home`. Never guess a name.
@@ -239,9 +249,10 @@ contact-form send) and lists those for you to do by hand. Remove
 
 ## Upstream docs
 
-- Client-facing generators (overview, wireframe, design brief) run in chat and are
-  exported to `docs/`. See `docs/README.md`. The style guide goes in
-  `docs/style-guide/` for `/theme`.
+- The Figma design (screenshots) is required; the client-facing generators'
+  output (overview, wireframe, design brief) and Jordan's content draft are
+  optional background, exported to `docs/`. See `docs/README.md`. The style guide
+  goes in `docs/style-guide/` for `/theme`.
 - The older generator docs (Schema & Query, Build Companion, Style Guide, Contact
   Form System, Privacy & Accessibility) live in the Claude Code project in
   claude.ai under `reference/`. This file and the skills replace the first four

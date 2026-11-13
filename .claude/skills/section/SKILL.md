@@ -1,6 +1,6 @@
 ---
 name: section
-description: Client projects only. Build one section component from a screenshot in docs/ against the page's real query data.
+description: Client projects only. Build one section component from the Figma design (its screenshot in docs/) against the page's real query data.
 disable-model-invocation: true
 argument-hint: "<page slug> <section name>, e.g. home hero"
 ---
@@ -17,12 +17,15 @@ Read `package.json`. If `name` is `latz-starter`, stop and say: "/section is for
 
 Do all of this first, silently:
 
-- **Screenshot:** one per section, `docs/NN-<slug>-page-<section>.ext`. Run
+- **The section in the Figma design** (today: its screenshot, one per section,
+  `docs/NN-<slug>-page-<section>.ext`; the Figma design is the source of truth, and
+  an optional doc that disagrees with it loses). Run
   `npm run docs` to see the page's sections; `$ARGUMENTS`'s section name can be
   loose (`/section home hero` finds `landing-hero`). **View that one screenshot**
-  and build only what it shows. If there is no screenshot for the page, stop and
-  ask Jordan to add one. Ignore Figma comment pins. Read `docs/design-brief*` for
-  design intent if it exists.
+  and build only what it shows. If the Figma design has no screenshot for the page,
+  stop and ask Jordan to add one. Ignore Figma comment pins. Read the design brief
+  (matched by `npm run docs`) for design intent if it exists; it is background,
+  Figma wins.
 - **Data contract:** the page file `app/(site)/<slug>/page.js` and its query in `data/queries/`. The query is the source of truth for field names. Read the section's schema group in `sanity/schemaTypes/`. If a component stub already exists, read it and cross-check its props against the query: stubs drift.
 - **This client's real design system, never the starter's or another client's:**
   - `tailwind.config.js`: the actual color slot hexes, `maxWidth`, spacing keys, radius keys.
