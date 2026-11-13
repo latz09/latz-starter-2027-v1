@@ -204,7 +204,7 @@ const MobileNavbar = ({ navLinks = [], logoUrl }) => {
 												<Link
 													href={contactLink.url}
 													onClick={() => handleNavClick(contactLink.label, contactLink.url)}
-													className={`w-full text-button inline-flex items-center justify-center rounded-sm transition-all duration-500 py-0.75 px-1.25 ${PANEL_THEME.ctaBg} ${PANEL_THEME.ctaText} ${PANEL_THEME.ctaHover}`}
+													className={`w-full text-button inline-flex items-center justify-center rounded transition-all duration-500 py-0.75 px-1.25 ${PANEL_THEME.ctaBg} ${PANEL_THEME.ctaText} ${PANEL_THEME.ctaHover}`}
 												>
 													{contactLink.label}
 												</Link>

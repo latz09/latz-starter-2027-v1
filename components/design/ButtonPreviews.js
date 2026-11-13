@@ -16,7 +16,7 @@ const ButtonPreviews = () => {
 	return (
 		<div className='max-w-5xl mx-auto px-2 py-3 space-y-2'>
 			{/* Light background group */}
-			<div className='rounded-lg border border-dark/10 shadow-soft overflow-hidden'>
+			<div className='rounded border border-dark/10 shadow-soft overflow-hidden'>
 				<p className='text-caption uppercase tracking-wide text-dark/50 px-2 pt-1.5'>
 					On Light Background
 				</p>
@@ -30,7 +30,7 @@ const ButtonPreviews = () => {
 			</div>
 
 			{/* Dark background group */}
-			<div className='rounded-lg bg-dark overflow-hidden'>
+			<div className='rounded bg-dark overflow-hidden'>
 				<p className='text-caption uppercase tracking-wide text-light/50 px-2 pt-1.5'>
 					On Dark Background
 				</p>

@@ -12,9 +12,12 @@
 	--hero-pt: var(--nav-h);
 
 	/* Per-project: pick which config color drives typography.
-	   Swap these two lines and every heading/utility below updates. */
+	   Swap these two lines and every heading/utility below updates.
+	   `npm run theme` regenerates the two lines between the markers. */
+	/* @gen:themeColors start */
 	--heading-color: theme('colors.dark');
 	--accent-color: theme('colors.secondary');
+	/* @gen:themeColors end */
 }
 
 main > *:first-child {
@@ -68,7 +71,12 @@ body {
 	@apply px-1 sm:px-1.25 md:px-2.5 lg:px-5 max-w-container mx-auto 3xl:max-w-wide;
 }
 
+/* Typography. `npm run theme` regenerates everything between the markers in
+   both @layer blocks below from docs/style-guide/tokens.json: one rule per
+   guide style, all sizes fluid via clamp(). Keep the markers. Do not add a
+   literal color to any rule here, the --heading-color var drives them all. */
 @layer base {
+	/* @gen:headings start */
 	h1,
 	h2,
 	h3,
@@ -116,9 +124,11 @@ body {
 		font-size: clamp(1.125rem, 2vw, 1.75rem);
 		line-height: 1.2;
 	}
+	/* @gen:headings end */
 }
 
 @layer components {
+	/* @gen:textClasses start */
 	.hero-title {
 		color: var(--heading-color);
 		font-family: var(--font-heading);
@@ -174,4 +184,5 @@ body {
 		font-weight: 600;
 		line-height: 1.05;
 	}
+	/* @gen:textClasses end */
 }

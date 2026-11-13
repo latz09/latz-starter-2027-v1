@@ -66,7 +66,7 @@ const ProjectChecklist = () => {
 	return (
 		<div className='section-x-padding py-4'>
 			<h2 className='opacity-30 mb-2 '>New Project Setup</h2>
-			<div className='rounded-lg border border-dark/10 shadow-soft overflow-hidden'>
+			<div className='rounded border border-dark/10 shadow-soft overflow-hidden'>
 				<table className='w-full text-left border-collapse'>
 					<thead>
 						<tr className='bg-dark/[0.03] border-b border-dark/10'>
