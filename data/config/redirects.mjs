@@ -1,4 +1,5 @@
-// data/config/redirects.js
+// data/config/redirects.mjs
+// .mjs because next.config.mjs imports it directly (Node loads it, not Next).
 // Old URL → new URL, for rebuilds of an existing site. Wired into
 // next.config.mjs, so they run at the edge before any page renders.
 //

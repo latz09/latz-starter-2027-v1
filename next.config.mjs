@@ -1,6 +1,6 @@
 // next.config.mjs
 
-import { redirects } from './data/config/redirects.js';
+import { redirects } from './data/config/redirects.mjs';
 
 // SVG handling (Turbopack, the Next 16 default bundler):
 //   import Icon from './icon.svg'       → React component (SVGR)
