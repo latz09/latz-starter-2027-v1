@@ -23,6 +23,7 @@ Every dependency is pinned to an exact version (`.npmrc` has `save-exact=true`).
   - Check yours: `node -v`
   - **Vercel note:** Vercel reads `engines.node` and, for an open range like `>=22.12`, builds on the **newest** Node it offers (Node 26 as of Nov 2026), not the version you have locally. To make Vercel match a local Node 22 exactly, change it to `"22.x"` in that client's `package.json`.
 - **git**
+- **Windows:** works from Git Bash or PowerShell. If `npm ci` / `npm install` prints lots of "tarball data ... seems to be corrupted" or `TAR_ENTRY_ERROR` warnings, your npm cache is corrupted, not the project: run `npm cache clean --force`, delete `node_modules`, and run `npm ci` again.
 - **A Sanity account** (the new-client script logs you in if needed)
 - A local clone of this repo, kept up to date (`git pull`). The new-client script copies from it.
 

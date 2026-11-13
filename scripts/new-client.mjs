@@ -2,7 +2,7 @@
 // scripts/new-client.mjs
 // Creates a new client project from this starter, in one go:
 //
-//   1. Copies the starter (committed files at HEAD) into a new folder
+//   1. Copies the starter (committed files of the current branch) into a new folder
 //   2. Sets the client name (package.json, Studio title, contact form)
 //   3. npm ci
 //   4. Sanity: creates the client's own organization + project + dataset,
@@ -26,9 +26,8 @@
 // Needs: Node >= 22.12, git, and a Sanity login (the script runs
 // `sanity login` for you if you're logged out).
 
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync, rmSync, mkdirSync } from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -76,19 +75,37 @@ const slugify = (s) =>
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/^-+|-+$/g, '');
 
-// Runs a command and returns stdout. stderr streams to the terminal so
-// prompts and spinners stay visible.
+// On Windows, npm and npx are .cmd shims, and Node refuses to spawn those
+// without a shell. Run them through the shell there, with each argument
+// quoted (client names have spaces, apostrophes, ampersands).
+const IS_WIN = process.platform === 'win32';
+const quoteWin = (a) => (/^[\w./:=@-]+$/.test(a) ? a : `"${String(a).replace(/"/g, '')}"`);
+
+function spawnCmd(cmd, args, opts = {}) {
+	if (IS_WIN && (cmd === 'npm' || cmd === 'npx')) {
+		return spawnSync([cmd, ...args.map(quoteWin)].join(' '), { shell: true, ...opts });
+	}
+	return spawnSync(cmd, args, opts);
+}
+
+// Runs a command and returns stdout; throws on a non-zero exit. stderr
+// streams to the terminal so prompts and spinners stay visible.
 function run(cmd, args, opts = {}) {
-	return execFileSync(cmd, args, {
+	const result = spawnCmd(cmd, args, {
 		encoding: 'utf8',
 		stdio: ['inherit', 'pipe', 'inherit'],
 		...opts,
 	});
+	if (result.error) throw result.error;
+	if (result.status !== 0) {
+		throw new Error(`${cmd} ${args.join(' ')} exited with code ${result.status}\n${result.stdout || ''}`);
+	}
+	return result.stdout;
 }
 
 // Runs a command fully interactive (login, installs). Returns exit status.
 function runInteractive(cmd, args, opts = {}) {
-	return spawnSync(cmd, args, { stdio: 'inherit', ...opts }).status;
+	return spawnCmd(cmd, args, { stdio: 'inherit', ...opts }).status;
 }
 
 // The Sanity CLI prints a JSON object on --json, sometimes after other output.
@@ -151,12 +168,12 @@ const starterPkg = JSON.parse(readFileSync(path.join(STARTER_DIR, 'package.json'
 const starterVersion = starterPkg.version;
 const starterCommit = run('git', ['rev-parse', '--short', 'HEAD'], { cwd: STARTER_DIR }).trim();
 
-mkdirSync(targetDir, { recursive: true });
-// git archive = exactly the committed tree: no node_modules, .next, .env.local.
-const archivePath = path.join(os.tmpdir(), `latz-starter-${Date.now()}.tar`);
-execFileSync('git', ['archive', '--format=tar', '-o', archivePath, 'HEAD'], { cwd: STARTER_DIR });
-execFileSync('tar', ['-xf', archivePath, '-C', targetDir]);
-rmSync(archivePath);
+// A local git clone = exactly the committed tree of the starter's current
+// branch: no node_modules, .next or .env.local. Works the same on Windows,
+// macOS and Linux (no tar). The starter's history is dropped right after.
+mkdirSync(path.dirname(targetDir), { recursive: true });
+run('git', ['clone', '--quiet', '--no-hardlinks', STARTER_DIR, targetDir]);
+rmSync(path.join(targetDir, '.git'), { recursive: true, force: true, maxRetries: 3 });
 ok(`latz-starter v${starterVersion} (${starterCommit})`);
 
 // ── 2. client name ─────────────────────────────────────────────────────────
@@ -224,7 +241,7 @@ if (skipSanity) {
 	step(4, 'Provisioning Sanity');
 
 	// Login
-	const loggedIn = spawnSync('npx', ['sanity', 'whoami'], { cwd: targetDir, stdio: 'ignore' }).status === 0;
+	const loggedIn = spawnCmd('npx', ['sanity', 'whoami'], { cwd: targetDir, stdio: 'ignore' }).status === 0;
 	if (!loggedIn) {
 		warn('Not logged in to Sanity. Opening login...');
 		if (runInteractive('npx', ['sanity', 'login'], { cwd: targetDir }) !== 0) fail('Sanity login failed.');
