@@ -173,6 +173,26 @@ Add old → new URLs to `data/config/redirects.mjs`. They're wired into `next.co
 
 ---
 
+## Claude Code
+
+The starter ships a Claude Code layer. Open the client project in VS Code with Claude Code and use:
+
+| | |
+|---|---|
+| `CLAUDE.md` | Rules Claude follows in every session (Tailwind guardrails, data conventions, Section/ButtonLink/SanityImage, schema conventions, gotchas). Add the client's notes to its "Client project" section. |
+| `docs/` | Put the overview, wireframe, design brief and page screenshots (named by slug) here. See `docs/README.md`. |
+| `/schema` | Reads `docs/`, shows an analysis and questions, then builds schemas, queries and page files in three phases. Approve each phase before it moves on. |
+| `/section home hero` | Builds one section from the screenshot against the page's real query. Ends with what to check on localhost. |
+| `/promote` | Takes a fix from this client and applies a generic version to the starter. Run from the client with the starter as a second folder: `claude --add-dir ../latz-starter-2027-v1`. It never commits or pushes: review the starter's `git diff`, then commit and push yourself. |
+
+Daily loop: keep `npm run dev` running in your own terminal and review on localhost. Claude edits files and runs `npm run build` and `npm run lint`. It does not run the dev server, push or deploy.
+
+`.claude/settings.json` allows build, lint and read-only git, asks before `npm install` and `git commit`, and denies `git push`, `vercel` and reading `.env.local` and the other real env files. These are guardrails, not a vault. Check them with `/permissions`.
+
+`/schema` and `/section` refuse to run in the starter itself. `/theme`, `/page`, `/site` and `/legal` are not built yet: theme with the Style Guide generator in chat for now.
+
+---
+
 ## Commands
 
 | | |
@@ -187,7 +207,7 @@ Add old → new URLs to `data/config/redirects.mjs`. They're wired into `next.co
 
 ## Changing the starter
 
-1. Make the change on a branch, run `npm run build` and `npm run lint`
+1. Make the change on a branch (or run `/promote` from the client that found the fix), run `npm run build` and `npm run lint`
 2. Bump `version` in `package.json` (patch for fixes, minor for new features, major for anything that breaks existing client code)
 3. Add an entry to `CHANGELOG.md`
 4. Merge to `main`

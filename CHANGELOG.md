@@ -6,6 +6,28 @@ Format: one section per version, newest first. Patch = fix, minor = new feature,
 
 ---
 
+## 1.1.0 (2026-11-13)
+
+Adds the Claude Code layer. No change to the site, Studio or dependencies.
+
+### Added
+- `CLAUDE.md`: the rules distilled from the Schema & Query, Build Companion, Style Guide and Contact Form System generator docs. Imports `AGENTS.md` (written by `next dev`) instead of replacing it.
+- `.claude/skills/schema`: `/schema` replaces the Schema & Query Generator. Analysis, then schemas, queries and page files with approval after each phase. Reads the real starter files, updates `sanity/presentation.js`, runs the build per phase. Code patterns in `patterns.md`.
+- `.claude/skills/section`: `/section` replaces the Build Companion. One section at a time from a screenshot, against the page's real query and the client's actual `globals.css`, color slots, `IMAGE_PRESETS` and `ButtonLink` state.
+- `.claude/skills/promote`: `/promote` ports a client fix into the starter (second working folder), strips client values, updates `CLAUDE.md`, runs the starter build, bumps the version and adds a CHANGELOG entry. Never commits or pushes.
+- `.claude/settings.json`: allows build, lint and read-only git; asks before installs and commits; denies `git push`, `vercel` and reading real `.env` files (Bash and PowerShell).
+- `docs/README.md`: per-client source material convention (overview, wireframe, design brief, screenshots named by slug).
+- `scripts/check-icon.mjs`: checks `@sanity/icons` subpath imports exist (`node scripts/check-icon.mjs Cog Home`).
+
+### Decisions
+- Generator rule "Home renders Typography/ColorPalette/ButtonPreviews" is dropped. Those stay at `/design`. When `/schema` builds Home it moves `ProjectChecklist` to `/design/checklist` (noindexed with the rest of `/design`); remove that page at launch.
+- `Section.js` is starter code, not "never modified": it changes only through `/promote`.
+- `/schema` and `/section` stop if `package.json` name is `latz-starter`; only `/promote` edits the starter.
+- The generators' canonical `sanity.config.js` / `structure.js` / "confirmed-safe icon" sections are gone. Commands read the real files.
+- `navigation` query no longer projects `logo` (the schema has no such field); `/schema` removes it in client builds.
+
+---
+
 ## 1.0.0 (2026-11-12)
 
 First version of the merged starter. Replaces `July-2026-Starter-Template` (Next.js) + `latz-cms-template` (Sanity overlay + `apply-template.sh`).
