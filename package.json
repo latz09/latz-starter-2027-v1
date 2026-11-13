@@ -14,6 +14,7 @@
 		"postbuild": "next-sitemap",
 		"email:dev": "email dev --port 3001",
 		"theme": "node scripts/theme.mjs",
+		"docs": "node scripts/docs-index.mjs",
 		"new-client": "node scripts/new-client.mjs"
 	},
 	"dependencies": {

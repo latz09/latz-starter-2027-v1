@@ -7,6 +7,8 @@
 			"Bash(node scripts/check-icon.mjs *)",
 			"Bash(npm run theme)",
 			"Bash(npm run theme *)",
+			"Bash(npm run docs)",
+			"Bash(npm run docs *)",
 			"Bash(git status)",
 			"Bash(git diff)",
 			"Bash(git diff *)",
