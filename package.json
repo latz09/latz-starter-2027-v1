@@ -1,0 +1,47 @@
+{
+	"name": "latz-starter",
+	"version": "1.0.0",
+	"private": true,
+	"engines": {
+		"node": ">=22.12"
+	},
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "eslint .",
+		"sitemap": "next-sitemap",
+		"postbuild": "next-sitemap",
+		"email:dev": "email dev --port 3001",
+		"new-client": "node scripts/new-client.mjs"
+	},
+	"dependencies": {
+		"@react-email/components": "1.0.12",
+		"@react-email/render": "2.3.1",
+		"@sanity/icons": "5.3.0",
+		"@sanity/image-url": "2.1.1",
+		"@sanity/vision": "6.23.0",
+		"@vercel/analytics": "1.6.1",
+		"clsx": "2.1.1",
+		"framer-motion": "12.43.0",
+		"next": "16.4.6",
+		"next-sanity": "13.4.0",
+		"next-sitemap": "4.2.3",
+		"react": "19.3.1",
+		"react-dom": "19.3.1",
+		"react-icons": "5.7.0",
+		"resend": "6.38.0",
+		"sanity": "6.23.0",
+		"styled-components": "6.6.0"
+	},
+	"devDependencies": {
+		"@react-email/ui": "6.11.12",
+		"@svgr/webpack": "8.1.0",
+		"autoprefixer": "10.6.2",
+		"eslint": "9.39.5",
+		"eslint-config-next": "16.4.6",
+		"postcss": "8.5.32",
+		"react-email": "6.11.12",
+		"tailwindcss": "3.4.19"
+	}
+}

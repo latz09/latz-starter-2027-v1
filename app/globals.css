@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--nav-h: 12svh;
+
+	/* Default: hero clears the nav automatically. Override this one line
+	   per client if a project wants a different gap — e.g. 6svh, 3rem,
+	   or 0 for full overlap behind the nav. */
+	/* --hero-pt: var(--nav-h); */
+	--hero-pt: var(--nav-h);
+
+	/* Per-project: pick which config color drives typography.
+	   Swap these two lines and every heading/utility below updates. */
+	--heading-color: theme('colors.dark');
+	--accent-color: theme('colors.secondary');
+}
+
+main > *:first-child {
+	padding-top: var(--hero-pt);
+}
+
+html {
+	@apply scroll-smooth;
+}
+
+body {
+	@apply bg-light font-default;
+	@apply antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* :focus-visible only fires for keyboard/programmatic focus, not mouse
+   clicks — so this doesn't ring every button on click, only when someone's
+   actually tabbing through the page. */
+:focus-visible {
+	outline: 2px solid theme('colors.primary');
+	outline-offset: 2px;
+}
+
+.scrollbar-hide {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+	display: none;
+}
+
+.no-scroll {
+	overflow: hidden !important;
+	height: 100% !important;
+}
+
+/* Page content column. Padding scales up through the breakpoints, then
+   two width caps take over so content itself stops growing and the
+   leftover space becomes margin instead:
+     - below 1920px (3xl): capped at `container` (1440px) — the
+       designer's standard mockup width.
+     - 1920px and up: capped at `wide` (1728px) instead, so margins
+       don't just keep compounding off the 1440 base on large monitors.
+   Both values live in tailwind.config.js under maxWidth — update them
+   there, not here, when a new mockup width comes in. If a client's
+   designer never hands you a larger-screen mockup, delete the
+   `3xl:max-w-wide` step and let `container` be the only cap. */
+.section-x-padding {
+	@apply px-1 sm:px-1.25 md:px-2.5 lg:px-5 max-w-container mx-auto 3xl:max-w-wide;
+}
+
+@layer base {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		color: var(--heading-color);
+		font-family: var(--font-heading);
+		font-weight: 600;
+		letter-spacing: -0.025em;
+
+		orphans: 2;
+		widows: 2;
+		word-break: normal;
+		overflow-wrap: break-word;
+		text-wrap: pretty;
+	}
+
+	h1 {
+		font-size: clamp(2.25rem, 7vw, 6rem);
+		line-height: 1;
+	}
+
+	h2 {
+		font-size: clamp(2rem, 6vw, 4rem);
+		line-height: 1;
+	}
+
+	h3 {
+		font-size: clamp(1.75rem, 4.5vw, 3rem);
+		line-height: 1.1;
+	}
+
+	h4 {
+		font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+		line-height: 1.1;
+	}
+
+	h5 {
+		font-size: clamp(1.25rem, 2.5vw, 2rem);
+		line-height: 1.2;
+	}
+
+	h6 {
+		font-size: clamp(1.125rem, 2vw, 1.75rem);
+		line-height: 1.2;
+	}
+}
+
+@layer components {
+	.hero-title {
+		color: var(--heading-color);
+		font-family: var(--font-heading);
+		font-size: clamp(2.75rem, 9vw, 7rem);
+		font-weight: 600;
+		line-height: 1;
+		letter-spacing: -0.025em;
+
+		orphans: 2;
+		widows: 2;
+		word-break: normal;
+		overflow-wrap: break-word;
+		text-wrap: pretty;
+	}
+
+	.text-overline {
+		color: var(--heading-color);
+		font-family: var(--font-heading);
+		font-size: clamp(1rem, 1.5vw, 1.25rem);
+		font-weight: 400;
+		line-height: 1;
+		letter-spacing: 1px;
+	}
+
+	.text-subheading {
+		color: var(--heading-color);
+		font-family: var(--font-heading);
+		font-size: clamp(1.37rem, 2vw, 1.5rem);
+		font-weight: 400;
+		line-height: 1.25;
+	}
+
+	.text-paragraph {
+		color: var(--heading-color);
+		font-family: var(--font-heading);
+		font-size: clamp(1.25rem, 2vw, 1.5rem);
+		font-weight: 400;
+		line-height: 1.35;
+	}
+
+	.text-caption {
+		color: var(--heading-color);
+		font-family: var(--font-heading);
+		font-size: clamp(0.875rem, 1.25vw, 1rem);
+		font-weight: 400;
+		line-height: 1;
+	}
+
+	.text-button {
+		color: var(--heading-color);
+		font-family: var(--font-heading);
+		font-size: clamp(1rem, 1.5vw, 1.25rem);
+		font-weight: 600;
+		line-height: 1.05;
+	}
+}
