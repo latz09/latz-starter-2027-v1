@@ -6,6 +6,11 @@ Format: one section per version, newest first. Patch = fix, minor = new feature,
 
 ---
 
+## 1.1.1 (2026-11-13)
+
+### Fixed
+- `ButtonLink` default `variant` was `'primary-light'`, which is not a key in `VARIANTS`, so a button with no `variant` got no color styling. Default is now `'primary-on-light'`. `CLAUDE.md` no longer warns about the broken default. Found in latz-pilot-test.
+
 ## 1.1.0 (2026-11-13)
 
 Adds the Claude Code layer. No change to the site, Studio or dependencies.

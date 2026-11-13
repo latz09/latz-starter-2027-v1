@@ -31,7 +31,7 @@ const VARIANTS = {
 
 export default function ButtonLink({
 	href = '/',
-	variant = 'primary-light',
+	variant = 'primary-on-light',
 	external = false,
 	className = '',
 	event, // Pass short name like "Hero - Free Consultation", component adds "CTA Click - " prefix
