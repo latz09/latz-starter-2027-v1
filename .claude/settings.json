@@ -1,0 +1,37 @@
+{
+	"$schema": "https://json.schemastore.org/claude-code-settings.json",
+	"permissions": {
+		"allow": [
+			"Bash(npm run build)",
+			"Bash(npm run lint)",
+			"Bash(node scripts/check-icon.mjs *)",
+			"Bash(git status)",
+			"Bash(git diff)",
+			"Bash(git diff *)",
+			"Bash(git log *)"
+		],
+		"ask": [
+			"Bash(npm install)",
+			"Bash(npm install *)",
+			"Bash(npm ci)",
+			"Bash(git commit *)"
+		],
+		"deny": [
+			"Bash(git push)",
+			"Bash(git push *)",
+			"PowerShell(git push)",
+			"PowerShell(git push *)",
+			"Bash(vercel)",
+			"Bash(vercel *)",
+			"Bash(npx vercel *)",
+			"PowerShell(vercel)",
+			"PowerShell(vercel *)",
+			"PowerShell(npx vercel *)",
+			"Read(./.env)",
+			"Read(./.env.local)",
+			"Read(./.env.*.local)",
+			"Read(./.env.production)",
+			"Read(./.env.development)"
+		]
+	}
+}
