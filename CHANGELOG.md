@@ -6,6 +6,33 @@ Format: one section per version, newest first. Patch = fix, minor = new feature,
 
 ---
 
+## 1.2.0 (2026-11-13)
+
+Scripts-first build system: every mechanical step is a Node script in `scripts/`, and the skills call them and do only the judgment. The whole per-client flow can be run by hand without Claude. No change to the site, Studio or dependencies.
+
+### Added
+- `/theme` + `scripts/theme.mjs` (`npm run theme`): the style guide → design system. Reads `docs/style-guide/tokens.json` and regenerates the `@gen` regions of `tailwind.config.js`, `app/globals.css`, `app/layout.js` and `data/config/theme.js`. Single vs split font, fluid clamps, `--heading-color`/`--accent-color`, one class per guide style, starter aliases kept, buttons out of scope. `--init` writes a blank tokens file, `--dry-run` previews. Deterministic and idempotent.
+- `scripts/docs-index.mjs` (`npm run docs`): shows the pages, sections and source docs `/schema` and `/section` will read, and flags mis-named screenshots. `--json` for the skills.
+- `scripts/new-page.mjs` / `remove-page.mjs` / `new-section.mjs`: scaffold (and un-scaffold) a page's schema + query + page file + registration, and a section component wired into its page. Idempotent, `--dry-run`.
+- `scripts/check.mjs` (`npm run check`): pre-launch check (env vars by name, placeholders, button kit, theme, `/design/checklist`, placeholder pages, registration sync) plus an off-machine checklist.
+- `scripts/bump-version.mjs` (`npm run bump`, starter only): the version + CHANGELOG step of `/promote`.
+- `scripts/lib/`: shared helpers (args, name conversions, EOL-safe file + marker edits, `docs/` parsing).
+- Screenshot naming convention: one per section, `NN-<slug>-page-<section>.ext`, NN restarting per page. The slug picks the page, the section name becomes the schema group + component, NN sets the order.
+- `data/config/theme.js` drives the `/design` Colors and Typography previews, so `/design` shows each client's real system (incl. per-client type classes).
+- `app/(site)/design/checklist`: the project setup checklist now ships here (noindexed), linked from `/design`, instead of being relocated per client.
+
+### Changed
+- `CLAUDE.md` rewritten as a human handbook (the per-client order, the scripts, the guardrails) that still works as Claude's instructions.
+- `/schema` and `/section` skills call the scaffold scripts and the new screenshot naming; `/promote` uses `npm run bump` and `.claude/settings.local.json` (the VS Code panel has no `/add-dir`).
+- `new-client.mjs` strips the starter-only scripts (`new-client`, `bump`) from client projects.
+- `rounded-lg`/`rounded-sm` → `rounded` in `ButtonPreviews`, `ProjectChecklist`, `MobileNavbar`, so they survive `/theme` dropping the `sm`/`lg`/`2xl` radius steps.
+
+### Rules
+- Never edit or commit in the starter except through `/promote`.
+- Per-client order: `new-client` → `/theme` → check `/design` → `/schema` → `/section`.
+
+---
+
 ## 1.1.1 (2026-11-13)
 
 ### Fixed
