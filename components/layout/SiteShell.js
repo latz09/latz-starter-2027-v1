@@ -6,17 +6,21 @@
 // outside the (site) route group, so without this it would render with no
 // nav or footer.
 
+import { draftMode } from 'next/headers';
 import { Analytics } from '@vercel/analytics/next';
 import NavigationContainer from '@/components/layout/navigation/NavigationContainer';
 import Footer from '@/components/layout/footer/Footer';
 import JsonLd from '@/components/seo/JsonLd';
 import DesignSystemBadge from '@/components/design/DesignSystemBadge';
+import VisualEditingClient from '@/components/ui/VisualEditingClient';
+import DraftModeBanner from '@/components/ui/DraftModeBanner';
 import { fetchSeoSettings } from '@/utils/cms/fetchSeoSettings';
 import { buildOrganizationSchema } from '@/lib/seo/buildOrganizationSchema';
 
 const SiteShell = async ({ children }) => {
 	const seo = await fetchSeoSettings(); // cached, same call as generateMetadata
 	const schema = buildOrganizationSchema(seo);
+	const { isEnabled: isDraftMode } = await draftMode();
 
 	return (
 		<>
@@ -26,6 +30,12 @@ const SiteShell = async ({ children }) => {
 			<Footer businessName={seo?.siteName} />
 			<Analytics />
 			<DesignSystemBadge />
+			{isDraftMode && (
+				<>
+					<VisualEditingClient />
+					<DraftModeBanner />
+				</>
+			)}
 		</>
 	);
 };

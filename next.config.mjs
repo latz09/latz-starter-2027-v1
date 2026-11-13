@@ -1,5 +1,7 @@
 // next.config.mjs
 
+import { redirects } from './data/config/redirects.js';
+
 // SVG handling (Turbopack, the Next 16 default bundler):
 //   import Icon from './icon.svg'       → React component (SVGR)
 //   import iconUrl from './icon.svg?url' → static asset, use iconUrl.src
@@ -30,6 +32,9 @@ const nextConfig = {
 				pathname: '/**',
 			},
 		],
+	},
+	async redirects() {
+		return redirects;
 	},
 	turbopack: {
 		rules: {

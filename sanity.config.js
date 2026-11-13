@@ -6,6 +6,7 @@
 
 import { buildLegacyTheme, defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
+import { presentationTool } from 'sanity/presentation';
 import { visionTool } from '@sanity/vision';
 
 import { apiVersion, dataset, projectId, studioPath } from './sanity/env';
@@ -16,6 +17,7 @@ import {
 	singletonActions,
 	singletonNewDocument,
 } from './sanity/structure';
+import { locations, mainDocuments } from './sanity/presentation';
 import CustomLayout from './sanity/components/CustomLayout';
 import ClientLogo from './sanity/components/ClientLogo';
 
@@ -58,6 +60,15 @@ export default defineConfig({
 
 	plugins: [
 		structureTool({ title: 'Edit Content', structure }),
+		// Live preview with click-to-edit. Same origin as the site, so no
+		// preview URL to configure: it loads this site's own pages in draft mode.
+		presentationTool({
+			title: 'Live Preview',
+			previewUrl: {
+				previewMode: { enable: '/api/draft-mode/enable' },
+			},
+			resolve: { mainDocuments, locations },
+		}),
 		// GROQ playground for you, hidden from clients on the live site.
 		...(process.env.NODE_ENV === 'development'
 			? [visionTool({ defaultApiVersion: apiVersion })]
